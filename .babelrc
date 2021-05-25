@@ -1,0 +1,28 @@
+{
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "root": ["."],
+          "alias": {
+            "src": "./src",
+            "styles": "./styles"
+          },
+          "extensions": [ ".js", ".jsx", ".json", ".ts", ".tsx" ],
+          "cwd": "babelrc"
+        }
+      ],
+      ["@babel/plugin-proposal-decorators", { "legacy": true }],
+      "transform-class-properties"
+    ],
+    "presets": [
+      ["next/babel",
+        {
+          "preset-env": { "targets": { "node": "current" } }
+        }
+      ]
+    ],
+    "ignore": []
+
+  }
+
