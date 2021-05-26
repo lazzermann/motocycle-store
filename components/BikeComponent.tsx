@@ -1,6 +1,6 @@
 export default function BikeComponent(){
     return(
-        <div className="my-2 max-w-xs rounded-md bg-white flex-col sm:mx-4">
+        <div className="my-2 max-w-xs rounded-md bg-white flex-col sm:mx-10">
             <img className="rounded-t-md" width="400" height="200" src="http://placeimg.com/640/360/any" alt="" />
             <div className="">
               <h4 className="pl-2 pb-1 font-semibold text-xl">Bike</h4>

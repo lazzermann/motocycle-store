@@ -26,11 +26,11 @@ export default function Header(){
           </div>
         </div>
 
-        <nav className={`${isToggle ? 'block' : 'hidden'}`}>
-          <div className="block">
-            <div className="bg-white">
+        <nav className={`sm:fixed sm:h-full sm:z-10 sm:w-1/4 sm:inset-0 sm:bg-gray-100 ${isToggle ? 'block' : 'hidden'}`}>
+          <div className="block cursor-pointer">
+            <div className="bg-white sm:bg-gray-100">
             
-              <div className="border-t-8 border-gray-200">
+              <div className="border-t-8 sm:border-none sm:border-gray-300 transition ease-out duration-300  hover:bg-gray-300">
                  <Link href="/test">
                   <div className="flex justify-between pr-4 pl-6 py-3">
                         <a className="flex justify-between" href="">
@@ -47,13 +47,13 @@ export default function Header(){
               </div>
             </div>
             
-            <div className="bg-white px-4 py-3 border-t-8 border-gray-200">
+            <div className="bg-white sm:bg-gray-100 px-4 py-3 border-t-8 sm:border-t sm:border-gray-300">
               <span className="font-bold text-xl">Search</span>
             </div>
             
-            <div className="bg-white">
+            <div className="bg-white sm:bg-gray-100">
             
-            <div className="border-t border-gray-200">
+            <div className="border-t sm:border-gray-300 transition ease-out duration-300  hover:bg-gray-300">
                <Link href="/test">
                 <div className="flex justify-between pr-4 pl-6 py-3">
                       <a className="flex justify-between" href="">
@@ -68,7 +68,7 @@ export default function Header(){
               </Link>  
             </div>
             
-            <div className="border-t border-gray-200">
+            <div className="border-t sm:border-gray-300 transition ease-out duration-300  hover:bg-gray-300">
                 <Link href="/test">
                   <div className="flex justify-between pr-4 pl-6 py-3">
                       <a className="flex justify-between" href="">
@@ -82,7 +82,7 @@ export default function Header(){
                 </Link>
             </div>
             
-            <div className="border-t border-gray-200">
+            <div className="border-t sm:border-gray-300 transition ease-out duration-300 hover:bg-gray-300">
               <Link href="/test">
                   <div className="flex justify-between pr-4 pl-6 py-3">
                       <a className="flex justify-between" href="">
@@ -96,7 +96,7 @@ export default function Header(){
               </Link> 
             </div>
 
-            <div className="border-t border-gray-200">
+            <div className="border-t sm:border-gray-300 transition ease-out duration-300 hover:bg-gray-300">
               <Link href="/test">
                   <div className="flex justify-between pr-4 pl-6 py-3">
                       <a className="flex justify-between" href="">
