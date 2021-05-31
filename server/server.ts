@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
-// import Test from './models/test'
-
+import Test from './models/test'
+import User from './models/User'
+import Product from './models/Product'
 
 const express = require('express')
 const next = require('next')
@@ -17,8 +18,8 @@ const options = {
   bufferMaxEntries: 0
 }
 
-const startDatabase = () =>{
-  connectToMongoDb(`'mongodb://localhost:27017/testBase`, options)
+const startDatabase = async() =>{
+  connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/testBase?retryWrites=true&w=majority`, options)
   startup()
 }
 
@@ -57,20 +58,17 @@ const startup = () => {
   let connectionString: mongoose.Connection = null
   try {
     console.info('Initializing database ...');
-    connectionString = connectToMongoDb(`'mongodb://localhost:27017/testBase`, options);
-} catch (e) {
+    connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/testBase?retryWrites=true&w=majority`, options);
+    populate()
+    
+  } catch (e) {
     console.log('ERROR') 
 }
 
 }
 
-// const createShema = async()=> {
-
-// await Test.create({
-//     email: '',
-//     firstName: 'aa',
-// })
-
-// }
+const populate = async()=>{
+  console.log(await Product.find({}))
+}
 
 export default{}

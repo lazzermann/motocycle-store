@@ -12,7 +12,11 @@ export class UserRole{
 
 @modelOptions({schemaOptions: {collection: 'users'}})
 export class User{
-    @prop({ref: ()=> Product})
+    @prop({ref: ()=> Product,
+        foreignField: 'products',
+        localField: '_id',
+        justOne: false
+    })
     public products?: Ref<Product>[]
 
     @prop()

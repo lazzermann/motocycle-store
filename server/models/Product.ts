@@ -11,7 +11,7 @@ class FuelType{
 }
 
 class Review{
-    @prop({ref: ()=>User})
+    @prop({required:true, ref: ()=>User})
     public user?: Ref<User>
 
     @prop()
@@ -23,7 +23,7 @@ class Review{
 
 @modelOptions({schemaOptions: {collection: 'products'}})
 export class Product{
-    @prop({ref: ()=> User})
+    @prop({required:true, ref: ()=> User})
     public user?: Ref<User>
 
     @prop({type: ()=> Review})
