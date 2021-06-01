@@ -1,18 +1,25 @@
 import mongoose from 'mongoose'
 import { prop, modelOptions, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
-import {Product} from './Product'
+import prod, {Product} from './Product'
 
-export class UserRole{
-    @prop()
-    public admin: string
+// export class UserRole{
+//     @prop()
+//     public admin: string
 
-    @prop()
-    public user: string
+//     @prop()
+//     public user: string
+// }
+
+enum UserRole{
+    admin = 'admin',
+    user = 'user'
 }
 
 @modelOptions({schemaOptions: {collection: 'users'}})
 export class User{
-    @prop({ref: ()=> Product,
+    @prop(
+    {
+        ref: 'prod',
         foreignField: 'products',
         localField: '_id',
         justOne: false
@@ -28,8 +35,8 @@ export class User{
     @prop()
     public lastName: string
 
-    @prop()
-    public role: UserRole
+    @prop({type: ()=> String, enum: Object.values(UserRole)})
+    public role: string
 
     @prop()
     public password: string

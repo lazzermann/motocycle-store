@@ -1,17 +1,27 @@
 import mongoose from 'mongoose'
 import { prop, modelOptions, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
-import { User } from './User'
+import use, { User } from './User'
 
-class FuelType{
-    @prop()
-    public gasoline: string
+// class FuelType{
+//     @prop()
+//     public gasoline: string
 
-    @prop()
-    public diesel: string
+//     @prop()
+//     public diesel: string
+// }
+
+enum FuelType{
+    gasoline = 'gasoline',
+    diesel = 'diesel'
 }
-
 class Review{
-    @prop({required:true, ref: ()=>User})
+    @prop({
+        required:true, 
+        ref: ()=>'use',
+        foreignField: 'user',
+        localField: '_id',
+        justOne: true
+    })
     public user?: Ref<User>
 
     @prop()
@@ -23,7 +33,13 @@ class Review{
 
 @modelOptions({schemaOptions: {collection: 'products'}})
 export class Product{
-    @prop({required:true, ref: ()=> User})
+    @prop({
+        required:true, 
+        ref: ()=> 'use',
+        foreignField: 'user',
+        localField: '_id',
+        justOne: true
+    })
     public user?: Ref<User>
 
     @prop({type: ()=> Review})
@@ -35,8 +51,8 @@ export class Product{
     @prop()
     public price: number
 
-    @prop()
-    public fuelType: FuelType 
+    @prop({type: ()=> String, enum: Object.values(FuelType)})
+    public fuelType: string 
 
     @prop()
     public description: string
