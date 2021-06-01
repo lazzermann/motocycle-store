@@ -19,7 +19,7 @@ const options = {
 }
 
 const startDatabase = async() =>{
-  connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/testBase?retryWrites=true&w=majority`, options)
+  connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority`, options)
   startup()
 }
 
@@ -58,7 +58,7 @@ const startup = () => {
   let connectionString: mongoose.Connection = null
   try {
     console.info('Initializing database ...');
-    connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/testBase?retryWrites=true&w=majority`, options);
+    connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority`, options);
     create
     populate
     
