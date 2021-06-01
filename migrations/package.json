@@ -1,0 +1,17 @@
+{
+  "name": "migrations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "20210601111836-fill-prod-db.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "faker": "^5.5.3",
+    "mongoose": "^5.12.12"
+  },
+  
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

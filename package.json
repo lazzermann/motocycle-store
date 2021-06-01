@@ -5,7 +5,7 @@
     "dev": "nodemon server/server.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "postbuild": "cp -r static .next/",
-    "migrate": "cd migrations/ && MONGO_URL=mongodb://localhost:27017/testBase migrate-mongo up && cd .." 
+    "migrate": "cd migrations/ && MONGO_URL=mongodb://localhost:27017/testBase migrate-mongo up && cd .."
   },
   "dependencies": {
     "@babel/core": "^7.14.3",
