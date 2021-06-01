@@ -1,15 +1,8 @@
 import mongoose from 'mongoose'
 import { prop, modelOptions, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
-import  {Product, ProductType} from './Product'
-import { WhatIsIt } from '@typegoose/typegoose/lib/internal/constants';
+import {Product, ProductType} from './Product'
+import {WhatIsIt} from '@typegoose/typegoose/lib/internal/constants';
 
-// export class UserRole{
-//     @prop()
-//     public admin: string
-
-//     @prop()
-//     public user: string
-// }
 
 export enum UserRole{
     admin = 'admin',
