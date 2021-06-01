@@ -9,7 +9,9 @@ export default async function handler(req, res){
 
 
 
-    const result = await Product.findOne({user: ObjectId('60b5e070c5401a21e230c91a') }).populate('user');
+    const result = await Product.find({})
+    .populate('user')
+    .populate('category');
 
     console.log('result', result);
     switch (method) {
