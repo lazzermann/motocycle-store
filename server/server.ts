@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import Test from './models/test'
-import User from './models/User'
-import Product from './models/Product'
+import User, {UserRole} from './models/User'
+import Product, {FuelType} from './models/Product'
 
 const express = require('express')
 const next = require('next')
@@ -59,7 +59,8 @@ const startup = () => {
   try {
     console.info('Initializing database ...');
     connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/testBase?retryWrites=true&w=majority`, options);
-    populate()
+    create
+    populate
     
   } catch (e) {
     console.log('ERROR') 
@@ -67,8 +68,40 @@ const startup = () => {
 
 }
 
-const populate = async()=>{
-  console.log(await Product.find({}))
+const create = async()=>{
+  const use = new User ({
+    products: [],
+    email: "lol@gmail.com",
+    firstName: "Lol",
+    lastName: "Kek",
+    role: UserRole.user,
+    password: '123',
+    image: 'img'
+  })
+  
+  const prod = new Product({
+    user: use._id,
+    reviews: [],
+    name: "bike",
+    price: 200,
+    fuelType: FuelType.gasoline,
+    description: "This is bike",
+    image: 'img'
+  })
+  
+  //use.products.push(prod._id)
+
+  await User.create(use)
+  await Product.create(prod)
+}
+
+const populate = ()=>{
+ console.log('population')
+ 
+ const res = User.findOne({password: '123'}).
+  populate({path: 'products', select:'name'})
+  console.log(res)
+  
 }
 
 export default{}

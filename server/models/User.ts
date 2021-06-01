@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { prop, modelOptions, getModelForClass, DocumentType, Ref } from '@typegoose/typegoose'
-import prod, {Product} from './Product'
+import  {Product, ProductType} from './Product'
+import { WhatIsIt } from '@typegoose/typegoose/lib/internal/constants';
 
 // export class UserRole{
 //     @prop()
@@ -10,21 +11,26 @@ import prod, {Product} from './Product'
 //     public user: string
 // }
 
-enum UserRole{
+export enum UserRole{
     admin = 'admin',
     user = 'user'
 }
 
 @modelOptions({schemaOptions: {collection: 'users'}})
 export class User{
-    @prop(
-    {
-        ref: 'prod',
-        foreignField: 'products',
-        localField: '_id',
-        justOne: false
-    })
-    public products?: Ref<Product>[]
+    // @prop(
+    // {
+    //     ref: 'Product',
+    //     foreignField: 'user',
+    //     localField: '_id',
+    //     justOne: false
+    // })
+    // @prop({ ref: CompanySchema })
+    // public company: CompanySchema;
+    // public products?: Product
+    
+    // @prop({}, WhatIsIt.ARRAY)
+    // public products?: mongoose.Types.Array<Product>;
 
     @prop()
     public email: string
