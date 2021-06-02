@@ -11,6 +11,8 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+const users = require('../pages/routes/user')
+
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -26,6 +28,8 @@ const startDatabase = async() =>{
 app.prepare().then(() => {
   startDatabase()
   const server = express()
+
+  server.use('/user', users)
 
   server.all('*', (req, res) => {
     return handle(req, res)
@@ -59,49 +63,31 @@ const startup = () => {
   try {
     console.info('Initializing database ...');
     connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority`, options);
-    create
-    populate
-    
   } catch (e) {
     console.log('ERROR') 
 }
 
 }
 
-const create = async()=>{
-  const use = new User ({
-    products: [],
-    email: "lol@gmail.com",
-    firstName: "Lol",
-    lastName: "Kek",
-    role: UserRole.user,
-    password: '123',
-    image: 'img'
-  })
+export const successResult = (res, result, message) =>{
+  const resObj: any ={
+      success : true,
+      message : message,
+      data : result
+  }
   
-  const prod = new Product({
-    user: use._id,
-    reviews: [],
-    name: "bike",
-    price: 200,
-    fuelType: FuelType.gasoline,
-    description: "This is bike",
-    image: 'img'
-  })
-  
-  //use.products.push(prod._id)
+  if(message && message !== "")
+      resObj['message'] = message
 
-  await User.create(use)
-  await Product.create(prod)
+  return res.status(200).json(resObj)
 }
 
-const populate = ()=>{
- console.log('population')
- 
- const res = User.findOne({password: '123'}).
-  populate({path: 'products', select:'name'})
-  console.log(res)
-  
+export const errorResult = (res, error, message, status = 404) => {
+  return res.status(status).json({
+      success: false,
+      message,
+  });
 }
+
 
 export default{}
