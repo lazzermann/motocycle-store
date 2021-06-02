@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import Test from './models/test'
 import User, {UserRole} from './models/User'
 import Product, {FuelType} from './models/Product'
+import bodyParser from 'body-parser'
 
 const express = require('express')
 const next = require('next')
@@ -12,6 +13,8 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const users = require('../pages/routes/user')
+const products = require('../pages/routes/product')
+const categories = require('../pages/routes/category')
 
 const options = {
   useNewUrlParser: true,
@@ -29,7 +32,12 @@ app.prepare().then(() => {
   startDatabase()
   const server = express()
 
+  server.use(bodyParser.json({limit: '20mb'}))
+  server.use(bodyParser.urlencoded({extended : true}))
+
   server.use('/user', users)
+  server.use('/product', products)
+  server.use('/category', categories)
 
   server.all('*', (req, res) => {
     return handle(req, res)
