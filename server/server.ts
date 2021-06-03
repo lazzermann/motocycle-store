@@ -1,8 +1,11 @@
 import mongoose from 'mongoose'
-import Test from './models/test'
-import User, {UserRole} from './models/User'
-import Product, {FuelType} from './models/Product'
 import bodyParser from 'body-parser'
+import { AwilixContainer } from 'awilix'
+import { loadControllers, scopePerRequest } from 'awilix-express'
+import container, { IContextContainer } from './container'
+import { Request, Response, NextFunction } from 'express'
+import config from '../config'
+import statusCode from '../http-status'
 
 const express = require('express')
 const next = require('next')
@@ -12,10 +15,6 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
-const users = require('../pages/routes/user')
-const products = require('../pages/routes/product')
-const categories = require('../pages/routes/category')
-
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -24,7 +23,7 @@ const options = {
 }
 
 const startDatabase = async() =>{
-  connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority`, options)
+  connectToMongoDb('mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority', options)
   startup()
 }
 
@@ -34,10 +33,12 @@ app.prepare().then(() => {
 
   server.use(bodyParser.json({limit: '20mb'}))
   server.use(bodyParser.urlencoded({extended : true}))
+  server.use(responses)
+  server.use(scopePerRequest(container));
 
-  server.use('/user', users)
-  server.use('/product', products)
-  server.use('/category', categories)
+  //(config.dev ? 'ts' : 'js')
+  const files = 'controllers/**/*.' + 'ts';
+  server.use(loadControllers(files, { cwd: __dirname }));
 
   server.all('*', (req, res) => {
     return handle(req, res)
@@ -70,12 +71,13 @@ const startup = () => {
   let connectionString: mongoose.Connection = null
   try {
     console.info('Initializing database ...');
-    connectionString = connectToMongoDb(`mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority`, options);
+    connectionString = connectToMongoDb('mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority', options);
   } catch (e) {
     console.log('ERROR') 
 }
 
 }
+
 
 export const successResult = (res, result, message) =>{
   const resObj: any ={
@@ -95,6 +97,22 @@ export const errorResult = (res, error, message, status = 404) => {
       success: false,
       message,
   });
+}
+
+
+const responses = (req: Request, res: Response, next: NextFunction) => {
+  res.answer = (
+         data: any,
+         message: any = null,
+         status: number = statusCode.OK,
+     ) => {
+
+         return res.status(status).json({
+             data,
+             message
+         });
+     };
+    next()
 }
 
 

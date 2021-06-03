@@ -17,7 +17,7 @@ module.exports = {
     })
     categories.push({
       _id: mongoose.Types.ObjectId(),
-      name: 'Super sport',
+      name: 'Super_sport',
       description: 'This is Super sport'
     })
     categories.push({
