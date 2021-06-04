@@ -42,9 +42,6 @@ export class Product{
     @prop({ ref: User })
     public user: User
 
-    // @prop({}, WhatIsIt.ARRAY)
-    // public user?: mongoose.Types.Array<User>;
-
     @prop({type: ()=> Review})
     public reviews: Review[]
 

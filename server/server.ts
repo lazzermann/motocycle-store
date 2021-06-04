@@ -4,7 +4,7 @@ import { AwilixContainer } from 'awilix'
 import { loadControllers, scopePerRequest } from 'awilix-express'
 import container, { IContextContainer } from './container'
 import { Request, Response, NextFunction } from 'express'
-import config from '../config'
+//import config from '../config'
 import statusCode from '../http-status'
 
 const express = require('express')

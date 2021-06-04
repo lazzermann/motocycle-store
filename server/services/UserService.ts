@@ -24,17 +24,8 @@ export default class UserService extends BaseContext{
 
         return user.save()
     }
-    public createUser(body){
-        const {UserModel} = this.di
-        return UserModel.create(body)
-    }
 
-    public updateUser(body){
-        const {UserModel} = this.di
-        return UserModel.findByIdAndUpdate(body._id, body)
-    }
-
-    public deleteUser(id){
+    public delete(id){
         const {UserModel} = this.di
         return UserModel.findOneAndRemove({_id : id})
     }

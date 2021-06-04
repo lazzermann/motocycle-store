@@ -1,58 +1,45 @@
 import mongoose from 'mongoose'
 import Category from '../models/Cathegory'
 import { successResult, errorResult } from '../server'
+import { Request, Response } from 'express'
 import {route, GET, POST, PUT, DELETE, before} from 'awilix-express'
 import BaseContext from '../BaseContext'
+import statusCode from '../../http-status'
 
 @route('/category')
 export default class CategoryController extends BaseContext{
     @GET()
     @route('/list')
     getAllCategories(req: Request, res: Response){
-
+        const {CategoryService} = this.di
+        return CategoryService.findAll()
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
+
+    @GET()
+    @route('/:id')
+    getCategoryById(req: Request, res: Response){
+        const {CategoryService} = this.di
+        return CategoryService.findId(req.params.id)
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
+    }
+
     @POST()
-    @route('/create')
-    createCategoryById(req: Request, res: Response){
-
-    }
-    @PUT()
     @route('/save')
     updateCategoryById(req: Request, res: Response){
-
+        const {CategoryService} = this.di
+        return CategoryService.save(req.body)
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
     @DELETE()
     @route('/delete/:id')
     deleteCategoryById(req: Request, res: Response){
-
+        const {CategoryService} = this.di
+        return CategoryService.deleteById(req.params.id)
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
 }
-
-const categoryRouter = require('express').Router()
-
-categoryRouter.get('/list', (req, res) => {
-    const result =  Category.find({})
-                        .then((data) => successResult(res, data, ""))
-                        .catch((err) => errorResult(res, err, "Cant fetch categories"))
-})
-
-categoryRouter.post('/create', (req, res) =>{
-    const result = Category.create(req.body)
-    .then(data => successResult(res, data, ""))
-    .catch(err => errorResult(res, err, "Cant create category"))
-})
-
-categoryRouter.put('/save', (req, res) => {
-    const result = Category.findByIdAndUpdate(req.body._id, req.body)
-    .then(data => successResult(res, data, ""))
-    .catch(err => errorResult(res, err, "Cant put category"))
-})
-
-categoryRouter.delete('/delete/:id', (req, res) => {
-    const result = Category.findByIdAndRemove(mongoose.Types.ObjectId(req.params.id))
-    .then(data => successResult(res, data, ""))
-    .catch(err => errorResult(res, err, "Cant delete category"))
-})
-
-
-module.exports = categoryRouter

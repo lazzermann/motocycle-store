@@ -36,4 +36,8 @@ export default class ProductService extends BaseContext{
         return ProductModel.findOneAndRemove({_id : id})
     }
 
+    public async deleteByUserId(id){
+        const {ProductModel} = this.di
+        return await ProductModel.find({user: id}).remove()
+    }
 }

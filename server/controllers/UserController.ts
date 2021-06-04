@@ -36,9 +36,13 @@ export default class UserController extends BaseContext{
     @DELETE()
     @route('/delete/:id')
     deleteUserAndHisProductsById(req : Request, res : Response){
-        const {UserService} = this.di
-        return UserService.deleteUser(req.params.id)
-        .then((data) => res.answer(data, "Success", statusCode.OK))
+        const {UserService, ProductService} = this.di
+        return UserService.delete(req.params.id)
+        .then((data) => {
+            ProductService.deleteByUserId(req.params.id)
+            return res.answer(data, "Success", statusCode.OK)
+        }
+        )
         .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
 }
