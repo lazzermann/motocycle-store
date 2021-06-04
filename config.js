@@ -8,10 +8,10 @@ if (typeof document !== 'undefined') {
 const isDev = process.env.NODE_ENV !== 'production';
 
 
-
 const prodConfig = {
     siteName: 'Motorcycle-store',
     baseUrl: process.env.BASE_URL,
+    jwtSecret : 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYyMjgxMjY4NiwiaWF0IjoxNjIyODEyNjg2fQ.zrcW6DJ9pTghMujqdFuBELFijFv5Jioymh99lAPLyjs',
     dev: isDev,
     debug_mode: process.env.DEBUG_MODE,
  mongo: {
@@ -27,13 +27,15 @@ const prodConfig = {
 
 
 let localConfig = {};
-if (isDev) {
-    try {
-        localConfig = require('./config.local.js');
-    } catch (ex) {
-        console.log('ex', ex)
-        console.log('config.local does not exist.');
-    }
-}
+// if (isDev) {
+//     try {
+//         localConfig = require('./config.local.js');
+//     } catch (ex) {
+//         console.log('ex', ex)
+//         console.log('config.local does not exist.');
+//     }
+// }
 
-module.exports = merge(prodConfig, localConfig);
+module.exports = prodConfig;
+
+//module.exports = merge(prodConfig, localConfig);

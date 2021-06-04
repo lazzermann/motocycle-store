@@ -1,7 +1,7 @@
 import passportLocal from 'passport-local'
 import { IContextContainer } from '../container'
 import { Request, Response } from 'express'
-import {UserRole} from '../models/User'
+import {UserRole} from '../common'
 import BaseContext from '../BaseContext'
 
 import {asClass, asValue} from 'awilix'
@@ -55,7 +55,7 @@ export default class SignUpStrategy extends BaseContext {
 
         const newUser = new UserModel(userData);
         //const error = UserModel.validate(newUser)
-        //console.log(error)
+        // console.log(error)
         
         // if (error) {
         //     return done(error);

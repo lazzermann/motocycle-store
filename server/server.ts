@@ -4,8 +4,9 @@ import { AwilixContainer } from 'awilix'
 import { loadControllers, scopePerRequest } from 'awilix-express'
 import container, { IContextContainer } from './container'
 import { Request, Response, NextFunction } from 'express'
-//import config from '../config'
+import config from '../config'
 import statusCode from '../http-status'
+import cookieSession from 'cookie-session'
 
 const express = require('express')
 const next = require('next')
@@ -33,6 +34,11 @@ app.prepare().then(() => {
 
   server.use(bodyParser.json({limit: '20mb'}))
   server.use(bodyParser.urlencoded({extended : true}))
+  server.use(cookieSession({
+    name: 'session',
+    keys: [config.jwtSecret],
+    maxAge: 31 * 24 * 60 * 60 * 1000
+  }))
   server.use(responses)
   server.use(scopePerRequest(container));
 

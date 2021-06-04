@@ -18,7 +18,7 @@ export interface IContextContainer extends IStrategyContainer, IModelContainer, 
 
 // ???? ctx:
 export const passportFunc = (ctx: IContextContainer) =>{
-    //passport.use('local-login', passportLocal.loginStrategy)
+    passport.use('local-login',  ctx.LogInStrategy.strategy)
     passport.use('local-signup', ctx.SignUpStrategy.strategy)
     //passport.use(passportLocal.jwtStrategy)
     return passport
