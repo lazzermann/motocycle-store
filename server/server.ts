@@ -7,6 +7,11 @@ import { Request, Response, NextFunction } from 'express'
 import config from '../config'
 import statusCode from '../http-status'
 import cookieSession from 'cookie-session'
+import {Identity, UserRole, IGNORS} from './common'
+import BaseContext from './BaseContext'
+import Container, {passportFunc} from './container'
+import passport, {PassportStatic} from 'passport'
+
 
 const express = require('express')
 const next = require('next')
@@ -24,16 +29,17 @@ const options = {
 }
 
 const startDatabase = async() =>{
-  connectToMongoDb('mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority', options)
+  connectToMongoDb(config.mongo.uri, config.mongo.options)
   startup()
 }
 
 app.prepare().then(() => {
   startDatabase()
   const server = express()
-
+  
   server.use(bodyParser.json({limit: '20mb'}))
   server.use(bodyParser.urlencoded({extended : true}))
+  server.use(acl)
   server.use(cookieSession({
     name: 'session',
     keys: [config.jwtSecret],
@@ -77,7 +83,7 @@ const startup = () => {
   let connectionString: mongoose.Connection = null
   try {
     console.info('Initializing database ...');
-    connectionString = connectToMongoDb('mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority', options);
+    connectionString = connectToMongoDb(config.mongo.uri, config.mongo.options);
   } catch (e) {
     console.log('ERROR') 
 }
@@ -119,6 +125,41 @@ const responses = (req: Request, res: Response, next: NextFunction) => {
          });
      };
     next()
+}
+
+const acl = (req: Request, res: Response, next: NextFunction) => {  
+  const passport = container.resolve<PassportStatic>("passport")
+  const path = req.url
+  console.log(path)
+  
+  let useAcl = true  
+  for(const item of IGNORS){
+    if(path.startsWith(item)){
+      useAcl = false
+    }
+  }
+  
+  console.log(useAcl)
+  
+  if(useAcl){
+    passport.authenticate('jwt', (err, identity: Identity) => {
+        console.log('passport.authenticate : ')
+        const isLogged = identity && identity.userId && identity.role !== UserRole.guest
+        
+        if (!isLogged) {
+              //identity = clearIdentity()
+              req.session.identity = identity
+          }
+          
+          const isAllow = undefined
+          
+          if (!isAllow) {
+              return res.answer(null, statusCode['404_MESSAGE'], statusCode.NOT_FOUND)
+          }
+  })
+  }
+
+  next()
 }
 
 

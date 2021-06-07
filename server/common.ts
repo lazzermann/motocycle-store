@@ -12,3 +12,16 @@ export interface Identity {
     token?: string
     role: UserRole
 }
+
+
+export const IGNORS = [
+    '/favicon.ico',
+    '/_next',
+    '/static',
+    '/sitemap.xml',
+    '/robots.txt',
+    '/service-worker.js',
+    '/manifest.json',
+    '/styles.chunk.css.map',
+    '/__nextjs',
+]
