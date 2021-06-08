@@ -114,16 +114,16 @@ export const errorResult = (res, error, message, status = 404) => {
 
 const responses = (req: Request, res: Response, next: NextFunction) => {
   res.answer = (
-         data: any,
-         message: any = null,
-         status: number = statusCode.OK,
-     ) => {
+        data: any,
+        message: any = null,
+        status: number = statusCode.OK,
+    ) => {
 
-         return res.status(status).json({
-             data,
-             message
-         });
-     };
+        return res.status(status).json({
+            data,
+            message
+        });
+    };
     next()
 }
 

@@ -34,15 +34,16 @@ export default class SignUpStrategy extends BaseContext {
             return done({ email: 'That e-mail already taken!' });
         }
         
-        const { firstName, lastName } = req.body;
+        const { firstName,  lastName } = req.body;
         
         let isRole: string = UserRole.user
-       
+        
         const userData = {
             firstName: firstName,
             lastName: lastName,
             email: email && email.trim().toLowerCase(),
             password: password && password.trim(),
+            image: 'https://robohash.org/lol' + lastName.split('').reverse().join('') + firstName.split('').reverse().join(''),
             role: isRole,
         };
         console.log('take data from body' + userData.firstName + ' ' + userData.lastName)

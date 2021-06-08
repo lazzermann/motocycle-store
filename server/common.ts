@@ -11,6 +11,7 @@ export interface Identity {
     email: string
     token?: string
     role: UserRole
+    image: string
 }
 
 

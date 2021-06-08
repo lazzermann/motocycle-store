@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-
+import BikeComponentList from '../components/BikeComponentList'
 const Header = dynamic(()=> import('../components/Header'))
 const Footer = dynamic(()=> import('../components/Footer'))
 const BikeComponent = dynamic(()=> import('../components/BikeComponent'))
@@ -42,14 +42,15 @@ export default function Home() {
       </section>
 
       <section className="pt-0 mt-4 border-t border-gray-300">
-        <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
+        {/* <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
           <BikeComponent/>
           <BikeComponent/>
           <BikeComponent/>
           <BikeComponent/> 
           <BikeComponent/> 
           <BikeComponent/> 
-        </div>
+        </div> */}
+        <BikeComponentList/>
       </section>
 
       <Footer/>

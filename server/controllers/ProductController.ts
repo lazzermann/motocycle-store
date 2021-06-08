@@ -45,6 +45,15 @@ export default class ProductController extends BaseContext{
         .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
 
+    @GET()
+    @route('/')
+    getProductToIndexPage(req: Request, res: Response){
+        const {ProductService} = this.di
+        return ProductService.getTheMostExpensive()
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
+    }
+
     @DELETE()
     @route('/delete')
     deleteProductById(req: Request, res: Response){

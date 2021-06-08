@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-const Footer = dynamic(()=> import('../components/Footer'))
+import SignUpForm from '../components/SignUpForm'
 
 export default function SignUp(){
     return(
@@ -13,37 +13,8 @@ export default function SignUp(){
                 <div className="flex flex-col items-center py-10">
                     <h1 className="text-center  font-semibold text-lg text-gray-700">Sign Up</h1>
                     <h3 className="text-center text-gray-400">Enter your details to create your account</h3>
-                </div>
-                
-                <div className="flex flex-col items-center w-full sm:w-435">
-                    <div>
-                        <div className="pt-7 w-full max-w-full sm:w-435">
-                            <input className="py-2 px-6 w-full rounded-md focus:outline-none bg-gray-100  text-gray-900 focus:bg-gray-200" placeholder="Fullname" type="text" />
-                        </div>
-                        <div className="pt-7 w-full max-w-full sm:w-435">
-                            <input className="py-2 px-6 w-full rounded-md focus:outline-none bg-gray-100  text-gray-900 focus:bg-gray-200" placeholder="Email" type="text" />
-                        </div>
-                        <div className="pt-7 w-full max-w-full sm:w-435">
-                            <input className="py-2 px-6 w-full rounded-md focus:outline-none bg-gray-100  text-gray-900 focus:bg-gray-200" placeholder="Password" type="password" />
-                        </div>
-                        <div className="pt-7 w-full max-w-full sm:w-435">
-                            <input className="py-2 px-6 w-full rounded-md focus:outline-none bg-gray-100  text-gray-900 focus:bg-gray-200" placeholder="Confirm password" type="password" />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-row justify-between mt-4 w-72 sm:w-435">
-                        <div>
-                            <span className="text-sm font-normal px-2 text-gray-300">I Agree with the <a href="#" className="text-blue-600 hover:text-blue-400">terms and conditions</a>.</span>
-                            <input className="form-checkbox h-4 w-4 bg-gray-300 rounded-md" type="checkbox" name="balcony"/>
-                        </div>
-                    </div>
-
-                    <div className="flex mt-7">
-                        <button className="bg-red-600 px-6  text-white text-sm font-medium  py-3 rounded-md ">
-                            Sign Up
-                        </button>
-                    </div>
-                </div>
+                </div>              
+                <SignUpForm />
             </div>
 
         </div>

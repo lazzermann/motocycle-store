@@ -4,7 +4,12 @@ import BaseContext from "../BaseContext";
 export default class ProductService extends BaseContext{
     public findAll(){
         const {ProductModel} = this.di
-        return ProductModel.find({})
+        return ProductModel.find({}).populate('reviews.user')
+    }
+
+    public getTheMostExpensive(){
+        const {ProductModel} = this.di
+        return ProductModel.find({}).sort({price : -1}).limit(6)
     }
 
     public async findByCategory(categoryName){
@@ -40,4 +45,6 @@ export default class ProductService extends BaseContext{
         const {ProductModel} = this.di
         return await ProductModel.find({user: id}).remove()
     }
+
+    
 }
