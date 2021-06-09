@@ -19,10 +19,10 @@ export default class ProductController extends BaseContext{
     }
 
     @GET()
-    @route('/:category')
+    @route('/:id')
     getAllProductsByCategory(req: Request, res: Response){
         const {ProductService} = this.di
-        return ProductService.findByCategory(req.params.category)
+        return ProductService.findById(req.params.id)
         .then((data) => res.answer(data, "Success", statusCode.OK))
         .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }

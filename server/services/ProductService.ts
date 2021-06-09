@@ -1,10 +1,16 @@
-import Product from "pages/product";
 import BaseContext from "../BaseContext";
 
 export default class ProductService extends BaseContext{
     public findAll(){
         const {ProductModel} = this.di
         return ProductModel.find({}).populate('reviews.user')
+    }
+
+    public findById(id){
+        const {ProductModel} = this.di
+        return ProductModel.findById(id)
+        .populate('category')
+        .populate('reviews.user')
     }
 
     public getTheMostExpensive(){
