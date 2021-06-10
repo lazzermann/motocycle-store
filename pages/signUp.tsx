@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic'
 import SignUpForm from '../components/SignUpForm'
+import AuthLayout from '../components/AuthLayout'
 
 export default function SignUp(){
     return(
-        <div className="flex flex-wrap justify-center items-center  min-h-screen bg-sign-in-back">
+        <AuthLayout>
             <div className="-mt-10">
                 
                 <div className="flex flex-col items-center">
@@ -17,6 +18,6 @@ export default function SignUp(){
                 <SignUpForm />
             </div>
 
-        </div>
+        </AuthLayout>
     )
 }

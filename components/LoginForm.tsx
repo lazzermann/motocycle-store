@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import React from "react"
-
+import Link from 'next/link'
 interface IProps{
 
 }
@@ -84,7 +84,9 @@ export default class LoginForm extends React.Component<IProps, IState>{
 
                 <div className="flex mt-12">
                     <h3 className="text-gray-600 text-center text-sm px-2">Don`t you have account yet?</h3>
-                    <a href="/signUp" className="text-gray-400 text-center text-sm px-2 hover:text-blue-600">Sign up</a> 
+                    <Link href ="/signUp">
+                        <a className="text-gray-400 text-center text-sm px-2 hover:text-blue-600">Sign up</a> 
+                    </Link>
                 </div>
             </form>
         )

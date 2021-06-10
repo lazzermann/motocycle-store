@@ -1,12 +1,12 @@
 import dynamic from 'next/dynamic'
 import React from "react"
 import { withRouter, NextRouter } from 'next/router'
-
-
-const Header = dynamic(()=> import('../../../components/Header'))
-const Footer = dynamic(()=> import('../../../components/Footer'))
-const Review = dynamic(()=> import('../../../components/Review'))
-const BikeComponent = dynamic(()=> import('../../../components/BikeComponent'))
+import Layout from '../../components/Layout'
+import nextConfig from '../../next.config'
+import BikeComponent from '../../components/BikeComponent'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Review from '../../components/Review'
 
 
 interface WithRouterProps {
@@ -23,15 +23,13 @@ class Product extends React.Component<WithRouterProps>{
 
     static async getInitialProps(ctx) {
         console.log('Context : ' + ctx.query.id)
-        const res = await fetch(`http://localhost:3000/product/${ctx.query.id}`)
+        const res = await fetch(`${nextConfig.public.BASE_URL}/product/${ctx.query.id}`)
         const json = await res.json()
         console.log(json)
         return { item: json.data}
     }
 
     componentDidMount(){
-        // console.log(this.props.item)
-        // console.log(this.state.item)
     }
 
     render(){
@@ -46,11 +44,9 @@ class Product extends React.Component<WithRouterProps>{
                 grade : item.grade
             }} />
         })
-        //console.log(reviews)
         
         return(
-            <div className="bg-gray-200 pb-3 min-h-screen mx-auto max-w-5xl">
-                <Header />
+            <Layout>
                 <h1 className="mt-10 text-3xl text-center">{this.state.item.name}</h1>
                 <section className="mt-4 mx-5 p-4 rounded-md bg-white flex flex-col items-center sm:flex-row sm:shadow-lg">
                     <div className="mx-auto sm:self-start sm:mx-0">
@@ -73,10 +69,6 @@ class Product extends React.Component<WithRouterProps>{
                                 <h1 className="font-semibold text-lg">Price :</h1>
                                 <span className="pl-6 -mt-0.5 text-2xl">{this.state.item.price} $</span>
                             </div>
-                            {/* <div className="flex hover:bg-gray-100 w-auto">
-                                <h1 className="font-semibold text-lg">Year :</h1>
-                                <span className="pl-7 -mt-0.5 text-2xl">2007</span>
-                            </div> */}
                             <div className="flex hover:bg-gray-100 w-auto">
                                 <h1 className="font-semibold text-lg">Type :</h1>
                                 <span className="pl-6 -mt-0.5 text-2xl">{prodCategories}</span>
@@ -85,8 +77,6 @@ class Product extends React.Component<WithRouterProps>{
     
                         <div className="border-t-2 mt-2 border-gray-500">
                             <div className="my-4">
-                                {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis non felis volutpat, pellentesque tellus vel, iaculis odio. */}
                                 {this.state.item.description}
                             </div>
                         </div>
@@ -109,15 +99,10 @@ class Product extends React.Component<WithRouterProps>{
                 <section className="p-3">
                     <h2 className="text-center mt-6 text-3xl">Similar motorcycles</h2>
                     <div className="mt-6 flex flex-row justify-center flex-wrap">
-                        {/* <BikeComponent/>
-                        <BikeComponent/>
-                        <BikeComponent/>
-                        <BikeComponent/> */}
+                        
                     </div>
                 </section>
-
-                <Footer />
-            </div>
+        </Layout>            
         )}
 }
 

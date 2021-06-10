@@ -130,7 +130,7 @@ const responses = (req: Request, res: Response, next: NextFunction) => {
 const acl = (req: Request, res: Response, next: NextFunction) => {  
   const passport = container.resolve<PassportStatic>("passport")
   const path = req.url
-  console.log(path)
+  //console.log(path)
   
   let useAcl = true  
   for(const item of IGNORS){
@@ -139,7 +139,7 @@ const acl = (req: Request, res: Response, next: NextFunction) => {
     }
   }
   
-  console.log(useAcl)
+  //console.log(useAcl)
   
   if(useAcl){
     passport.authenticate('jwt', (err, identity: Identity) => {

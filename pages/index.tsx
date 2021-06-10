@@ -2,14 +2,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import BikeComponentList from '../components/BikeComponentList'
+import Layout from '../components/Layout'
+
 const Header = dynamic(()=> import('../components/Header'))
 const Footer = dynamic(()=> import('../components/Footer'))
 const BikeComponent = dynamic(()=> import('../components/BikeComponent'))
 
 export default function Home() {
   return (
-    <div id="app" className="mx-auto pb-3 min-h-screen bg-gray-200 max-w-5xl antialiased">
-      <Header />
+    <Layout>
       <section className="mt-8 px-4">
         <div className="flex flex-col bg-white rounded-xl py-3">
           <h2 className=" text-center text-gray-800 text-3xl">
@@ -42,18 +43,8 @@ export default function Home() {
       </section>
 
       <section className="pt-0 mt-4 border-t border-gray-300">
-        {/* <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
-          <BikeComponent/>
-          <BikeComponent/>
-          <BikeComponent/>
-          <BikeComponent/> 
-          <BikeComponent/> 
-          <BikeComponent/> 
-        </div> */}
         <BikeComponentList/>
       </section>
-
-      <Footer/>
-    </div>
+    </Layout>
   )
 }

@@ -1,12 +1,13 @@
 import dynamic from "next/dynamic"
 import React from "react"
 import BikeComponent from './BikeComponent'
+import Product from '../src/Product' 
 
 interface IProps{
 
 }
 interface IState{
-
+    items: Array<Product>
 }
 
 export default class BikeComponentList extends React.Component<IProps, IState>{
@@ -32,7 +33,7 @@ export default class BikeComponentList extends React.Component<IProps, IState>{
             data.json()
             .then((data) => {
                 console.log(data)
-                this.setState({
+                this.setState<typeof data.data>({
                     items : data.data
                 })
             })
@@ -46,17 +47,7 @@ export default class BikeComponentList extends React.Component<IProps, IState>{
 
 
     render(){
-    const bikeComps = this.state.items.map((item) =>{
-        console.log(item)
-        return <BikeComponent key={item._id.toString()} 
-        product={{
-            name : item.name,
-            image : item.image,
-            price : item.price,
-            reviewsCount : item.reviews.length
-        }}/>
-    })
-
+    const bikeComps = this.state.items.map((item) =>  <BikeComponent product={item} key={item._id.toString()} /> )
     return(
     <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
         {bikeComps}

@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic"
 import React from "react"
 import LoginForm from '../components/LoginForm'
+import AuthLayout from '../components/AuthLayout'
 const Footer = dynamic(()=> import('../components/Footer'))
 
 export default function Login(){
     return(
-        <div className="flex flex-wrap justify-center items-center  min-h-screen bg-sign-in-back">
+        <AuthLayout>
             <div className="-mt-10">
                 
                 <div className="flex flex-col items-center">
@@ -19,6 +20,6 @@ export default function Login(){
                 <LoginForm />
             </div>
 
-        </div>
+        </AuthLayout>
     )
 }
