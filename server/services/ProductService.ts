@@ -13,6 +13,10 @@ export default class ProductService extends BaseContext{
         .populate('reviews.user')
     }
 
+    public findSimilar(id){
+
+    }
+
     public getTheMostExpensive(){
         const {ProductModel} = this.di
         return ProductModel.find({}).sort({price : -1}).limit(6)

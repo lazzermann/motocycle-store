@@ -7,13 +7,19 @@ import BikeComponent from '../../components/BikeComponent'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Review from '../../components/Review'
-
-
+import ReviewModel from '../../src/Review'
+import {xRead} from '../../model'
+import ProductModel from '../../src/Product'
 interface WithRouterProps {
-    router: NextRouter
+    router: NextRouter,
+    item: ProductModel
 }
 
-class Product extends React.Component<WithRouterProps>{
+interface IStates{
+    item : ProductModel
+}
+
+class Product extends React.Component<WithRouterProps, IStates>{
     constructor(props){
         super(props)
         this.state = {
@@ -23,28 +29,34 @@ class Product extends React.Component<WithRouterProps>{
 
     static async getInitialProps(ctx) {
         console.log('Context : ' + ctx.query.id)
-        const res = await fetch(`${nextConfig.public.BASE_URL}/product/${ctx.query.id}`)
-        const json = await res.json()
-        console.log(json)
-        return { item: json.data}
-    }
-
-    componentDidMount(){
+        const res = await xRead(`/product/${ctx.query.id}`)
+        console.log(res.json.data)
+        return { item: res.json.data}
     }
 
     render(){
         console.log(this.state.item)
+        let averageGradeMarkers = []
         const prodCategories = this.state.item.category.map((item) => item.name.replace('_', ' ')).join(' - ')
         const reviews = this.state.item.reviews.map((item) => {
-            return <Review review={{
-                image : item.user.image,
-                text  : item.text,
-                firstName : item.user.firstName,
-                lastName : item.user.lastName,
-                grade : item.grade
-            }} />
+            return <Review review={item} />
         })
         
+        const averageGradeByReviews = this.state.item.reviews.reduce((acc, curr) =>{
+            return acc + curr.grade
+        }, 0) / this.state.item.reviews.length
+
+        console.log(averageGradeByReviews)
+     
+        for(let i = 1; i <= 5; i++){
+            if(i <= averageGradeByReviews){
+                averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
+            }
+            else{
+                averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
+            }
+        }
+
         return(
             <Layout>
                 <h1 className="mt-10 text-3xl text-center">{this.state.item.name}</h1>
@@ -52,11 +64,7 @@ class Product extends React.Component<WithRouterProps>{
                     <div className="mx-auto sm:self-start sm:mx-0">
                         <img className="rounded-md w-96 h-52" src={this.state.item.image} alt="" />
                         <div className="mt-2 text-sm text-gray-600 flex items-start sm:justify-center sm:items-center">
-                            <svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                            <svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                            <svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                            <svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                            <svg className="h-6 w-6 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
+                            {averageGradeMarkers}
                             <span className="ml-2 text-lg">{this.state.item.reviews.length} reviews</span>
                         </div>
                     </div>
@@ -96,12 +104,12 @@ class Product extends React.Component<WithRouterProps>{
                 </section>
 
 
-                <section className="p-3">
+                {/* <section className="p-3">
                     <h2 className="text-center mt-6 text-3xl">Similar motorcycles</h2>
                     <div className="mt-6 flex flex-row justify-center flex-wrap">
                         
                     </div>
-                </section>
+                </section> */}
         </Layout>            
         )}
 }

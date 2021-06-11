@@ -21,6 +21,23 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
   }
 
   render(){
+
+    let averageGradeMarkers = []
+    const averageGradeByReviews = this.props.product.reviews.reduce((acc, curr) =>{
+        return acc + curr.grade
+    }, 0) / this.props.product.reviews.length
+
+    console.log(averageGradeByReviews)
+ 
+    for(let i = 1; i <= 5; i++){
+        if(i <= averageGradeByReviews){
+            averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
+        }
+        else{
+            averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
+        }
+    }
+
     return(
       <div className="my-2 max-w-xs rounded-md bg-white flex-col sm:mx-10">
           <Link href={`/products/${this.props.product._id}`}>
@@ -33,12 +50,8 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
               <h2 className="pl-2 font-medium text-xl">Price: {this.props.product.price}$</h2>
               {/* <h2 className="pl-2 font-medium text-lg">Year: 2007</h2> */}
               <div className="text-sm pl-2 pb-3 text-gray-600 mt-2 flex items-center">
-                  <svg className="h-4 w-4 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                  <svg className="h-4 w-4 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                  <svg className="h-4 w-4 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                  <svg className="h-4 w-4 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                  <svg className="h-4 w-4 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>
-                  {/* <span className="ml-2">{props.product.reviewsCount} reviews</span> */}
+                  {averageGradeMarkers}
+                  <span className="ml-2">{this.props.product.reviews.length} reviews</span>
               </div>
             </div>
         </div>

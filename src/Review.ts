@@ -1,6 +1,8 @@
+
+import User from './User'
 export default interface Review{
     text : string,
-    firstName : string,
+    user : User,
     grade : number,
     image : string,
 }

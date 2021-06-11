@@ -1,15 +1,17 @@
 import dynamic from "next/dynamic"
 import React from "react"
 import Link from 'next/link'
-interface IProps{
-
+import Router  from 'next/router'
+import { xSave } from '../model' 
+interface WithRouterProps{
+    // router : NextRouter
 }
 interface IState{
     email : string,
     password : string
 }
 
-export default class LoginForm extends React.Component<IProps, IState>{
+export default class LoginForm extends React.Component<WithRouterProps, IState>{
     constructor(props){
         super(props)
 
@@ -34,26 +36,38 @@ export default class LoginForm extends React.Component<IProps, IState>{
 
     handleSubmitChange(e){
         e.preventDefault()
-        const opts = {
-            method : 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
-        }
         
-        const response = fetch('/auth/login', opts)
+        // const opts = {
+        //     method : 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(this.state)
+        // }
         
-        response.then((data) => {
-            data.json()
-            .then((data) => console.log(data))
-            .catch((err) => console.log('Json' + ' ' + err)
-            )
+        // const response = fetch('/auth/login', opts)
+        
+        // response.then((data) => {
+        //     data.json()
+        //     .then((data) => console.log(data))
+        //     .catch((err) => console.log('Json' + ' ' + err)
+        //     )
+        // })
+        // .catch((err) => console.log(err))
+
+        const data = xSave('/auth/login', this.state).then((res) =>{
+            console.log(res.json)
+            console.log(document.cookie)
+            return res.json
         })
-        .catch((err) => console.log(err))
+
+        Router.push({
+            pathname : '/'
+        })
     }
     
     render(){
+        
         return(     
             <form onSubmit={this.handleSubmitChange} className="flex flex-col items-center w-full sm:w-435">
                 <div className = "w-full sm:w-435">
@@ -78,7 +92,7 @@ export default class LoginForm extends React.Component<IProps, IState>{
 
                 <div className="flex mt-4">
                     <button type="submit" className="bg-red-600 px-6  text-white text-sm font-medium  py-3 rounded-md ">
-                        Sign Up
+                        Sign In
                     </button>
                 </div>
 

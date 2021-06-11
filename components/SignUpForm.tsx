@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic"
 import React from "react"
-
+import {xSave} from '../model'
+import Router from 'next/router'
 interface IProps{
 
 }
@@ -41,28 +42,37 @@ export default class SignUpForm extends React.Component<IProps, IState>{
     handleSubmitChange(e){
         e.preventDefault()
 
-        if(this.state.confirmPassword !== this.state.password){
-            alert('Password don`t match')
-            return
-        }
+        // if(this.state.confirmPassword !== this.state.password){
+        //     alert('Password don`t match')
+        //     return
+        // }
         
-        const opts = {
-            method : 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
-        }
+        // const opts = {
+        //     method : 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(this.state)
+        // }
         
-        const response = fetch('/auth/signup', opts)
+        // const response = fetch('/auth/signup', opts)
         
-        response.then((data) => {
-            data.json()
-            .then((data) => console.log(data))
-            .catch((err) => console.log('Json' + ' ' + err)
-            )
+        // response.then((data) => {
+        //     data.json()
+        //     .then((data) => console.log(data))
+        //     .catch((err) => console.log('Json' + ' ' + err)
+        //     )
+        // })
+        // .catch((err) => console.log(err))
+
+        const data = xSave('/auth/signup', this.state).then((res) =>{
+            console.log(res.json)
+            return res.json
         })
-        .catch((err) => console.log(err))
+
+        Router.push({
+            pathname: '/'
+        })
     }
     
     render(){
