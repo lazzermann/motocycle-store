@@ -1,35 +1,45 @@
-// import {AppState, AnyAction} from './store'
-import createSagaMiddleware, {Task, END} from 'redux-saga';
-import config from '../config'
-import {createStore, applyMiddleware, compose, Store, combineReducers} from 'redux';
-import {createWrapper, Context, HYDRATE, MakeStore} from 'next-redux-wrapper';
+import { HYDRATE } from "next-redux-wrapper";
+import { AnyAction, combineReducers } from "redux";
 
+import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from '../models/products'
+
+export interface AppState {
+    users: any,
+    products: any,
+}
 
 const nextReducer = (
-    state,
-    action
+    state: AppState,
+    action: AnyAction
 ) => {
     switch (action.type) {
-    case HYDRATE:
-        if (action.payload.app === 'init') delete action.payload.app;
-        if (action.payload.page === 'init') delete action.payload.page;
-        if (!state.isHydrate) {
-            return { ...state };
-        }
-        return { ...state, ...action.payload, isHydrate: true  };
-    case 'APP':
-        return { ...state, app: action.payload };
-    case 'PAGE':
-        return { ...state, page: action.payload };
-    default:
-        return state;
-    }
+        case HYDRATE:
+            if (action.payload.app === 'init') delete action.payload.app;
+            if (action.payload.page === 'init') delete action.payload.page;
+            return {...state, ...action.payload};
+        case 'APP':
+            return {...state, app: action.payload};
+        case 'PAGE':
+            return {...state, page: action.payload};
+        default:
+            return state;
+    }   
 };
 
 function products(state = [], action: any) {
+    switch(action.type){
+        case REQUEST_PRODUCTS:{
+            const data = JSON.parse(JSON.stringify(action.data));
+            return data;
+        }
+            
+        default:
+            return state
+    }
 }
 
 function users(state = [], action: any) {
+    return state;
 }
 
 const appReducer = combineReducers({
@@ -43,4 +53,4 @@ function rootReducer(state, action) {
     return finalState;
 }
 
-export default rootReducer;
+export default rootReducer; 

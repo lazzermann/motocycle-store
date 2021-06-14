@@ -1,7 +1,14 @@
-import createSagaMiddleware, {Task, END} from 'redux-saga';
-import config from '../config'
-import {createStore, applyMiddleware, compose, Store} from 'redux';
-import {createWrapper, Context, HYDRATE, MakeStore} from 'next-redux-wrapper';
+import createSagaMiddleware, { Task, END } from 'redux-saga'
+import {all} from 'redux-saga/effects'
+import nextConfig from 'next.config'
+import { createStore, applyMiddleware, compose, Store, AnyAction } from 'redux';
+import { createWrapper, MakeStore } from 'next-redux-wrapper';
+import next from 'next';
+import { AppState } from './reducer';
+import rootReducer from './reducer';
+
+// import {watchFetchUser} from '../actions/user'
+import {watchFetchProducts} from '../models/products'
 
 declare global {
     interface Window {
@@ -9,34 +16,37 @@ declare global {
     }
 }
 
-export interface AppState {
-    // users: any,
-    // products: any,
-    // reviews: any
-}
-
-export interface AnyAction{
-
-}
-
 const rootSaga = function* root() {
-    // yield all( [] );
+      yield all([
+          watchFetchProducts()
+      ]);
 };
 
-export const makeStore = (state: AppState = {users: null, products: null, reviews: null}, action: AnyAction) => {
+export interface SagaStore extends Store {
+    sagaTask?: Task;
+    runSaga: () => void;
+}
+
+export const makeStore: MakeStore<AppState> = () => {
     const sagaMiddleware = createSagaMiddleware();
 
-    const composeEnhancers = (config.dev && typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__)
+    const composeEnhancers = (nextConfig.public.IS_DEV && typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__)
         // @ts-ignore
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
         : compose;
 
     const enhancer = composeEnhancers(
         applyMiddleware(sagaMiddleware)
+        // other store enhancers if any
     );
 
-    const store = createStore(next, enhancer) as SagaStore;
+    const store = createStore(rootReducer, enhancer) as SagaStore;
+    store.sagaTask = sagaMiddleware.run(rootSaga);
+    // Entity.store = store;
+    store.runSaga = () => sagaMiddleware.run(rootSaga);
     return store;
-}
-const wrapper = createWrapper<any>(makeStore)
-export default wrapper
+};
+
+
+const wrapper = createWrapper<AppState>(makeStore);
+export default wrapper; 

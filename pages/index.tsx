@@ -3,10 +3,8 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import BikeComponentList from '../components/BikeComponentList'
 import Layout from '../components/Layout'
+import React from 'react' 
 
-const Header = dynamic(()=> import('../components/Header'))
-const Footer = dynamic(()=> import('../components/Footer'))
-const BikeComponent = dynamic(()=> import('../components/BikeComponent'))
 
 export default function Home() {
   return (

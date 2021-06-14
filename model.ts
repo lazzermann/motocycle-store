@@ -33,12 +33,7 @@ function xFetch(endpoint: string, method: HTTP_METHOD, data : any){
                 return {json, res}
             })
         })
-        // .then(({ json, res }) =>
-        //         Promise.resolve({
-        //             success: res.ok ? true : false,
-        //             response: json
-        //         })
-        //     );
+        .then(({ json, res }) => json );
 }
 
 
@@ -53,4 +48,4 @@ export function xRead(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_ME
 
 export function xDelete(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.DELETE){
 
-}
+}   
