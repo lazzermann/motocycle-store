@@ -1,5 +1,5 @@
 import createSagaMiddleware, { Task, END } from 'redux-saga'
-import {all} from 'redux-saga/effects'
+import { all } from 'redux-saga/effects'
 import nextConfig from 'next.config'
 import { createStore, applyMiddleware, compose, Store, AnyAction } from 'redux';
 import { createWrapper, MakeStore } from 'next-redux-wrapper';
@@ -8,7 +8,7 @@ import { AppState } from './reducer';
 import rootReducer from './reducer';
 
 // import {watchFetchUser} from '../actions/user'
-import {watchFetchProducts} from '../models/products'
+import { watchFetchProducts, watchFetchProductById } from '../models/products'
 
 declare global {
     interface Window {
@@ -17,9 +17,10 @@ declare global {
 }
 
 const rootSaga = function* root() {
-      yield all([
-          watchFetchProducts()
-      ]);
+    yield all([
+        watchFetchProducts(),
+        watchFetchProductById()
+    ]);
 };
 
 export interface SagaStore extends Store {
@@ -49,4 +50,4 @@ export const makeStore: MakeStore<AppState> = () => {
 
 
 const wrapper = createWrapper<AppState>(makeStore);
-export default wrapper; 
+export default wrapper;

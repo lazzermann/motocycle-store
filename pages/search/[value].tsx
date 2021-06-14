@@ -23,8 +23,8 @@ class SearchPage extends React.Component<Props, States>{
     static async getInitialProps(ctx) {
         console.log('Context : ' + ctx.query.value)
         const res = await xRead(`/product/search/${ctx.query.value}`)
-        console.log(res.json.data)
-        return { items: res.json.data}
+        console.log(res.data)
+        return { items: res.data}
     }
 
     render(){

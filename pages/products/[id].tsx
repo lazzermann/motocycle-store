@@ -1,15 +1,11 @@
-import dynamic from 'next/dynamic'
 import React from "react"
-import { withRouter, NextRouter } from 'next/router'
+import Router, { withRouter, NextRouter } from 'next/router'
 import Layout from '../../components/Layout'
-import nextConfig from '../../next.config'
-import BikeComponent from '../../components/BikeComponent'
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
-import Review from '../../components/Review'
-import ReviewModel from '../../src/Review'
 import {xRead} from '../../model'
 import ProductModel from '../../src/Product'
+import { connect } from 'react-redux'
+import {fetchProductById} from '../../models/products'
+
 interface WithRouterProps {
     router: NextRouter,
     item: ProductModel
@@ -30,8 +26,12 @@ class Product extends React.Component<WithRouterProps, IStates>{
     static async getInitialProps(ctx) {
         console.log('Context : ' + ctx.query.id)
         const res = await xRead(`/product/${ctx.query.id}`)
-        console.log(res.json.data)
-        return { item: res.json.data}
+        return { item: res.data}
+    }
+
+    componentDidMount(){
+        const {fetchProductById} = this.props
+        fetchProductById({uri : `/product/${Router.query.id}`})
     }
 
     render(){
@@ -114,5 +114,13 @@ class Product extends React.Component<WithRouterProps, IStates>{
         )}
 }
 
+const mapStateToProps = (state) => {
+    const { products } = state;
+    return {
+        
+    };
+};
 
-export default Product
+export default connect(mapStateToProps, { fetchProductById  })(Product);
+
+// export default Product
