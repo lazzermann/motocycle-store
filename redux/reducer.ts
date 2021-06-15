@@ -27,10 +27,18 @@ const nextReducer = (
 };
 
 function products(state = [], action: any) {
+    
     switch(action.type){
         case REQUEST_PRODUCTS:{
             const data = JSON.parse(JSON.stringify(action.data));
-            return data;
+            console.log('action data', action.data)
+            
+            return ([
+                ...state,
+                ...data
+            ])
+
+            // return [...data]
         }
             
         default:

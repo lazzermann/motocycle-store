@@ -10,6 +10,7 @@ export default class ProductService extends BaseContext{
         const {ProductModel} = this.di
         return ProductModel.findById(id)
         .populate('category')
+        .populate('user')
         .populate('reviews.user')
     }
 
@@ -23,13 +24,18 @@ export default class ProductService extends BaseContext{
 
         return ProductModel.find({})
         .where('fuelType', productByID.fuelType)
+        .populate('category')
         .sort({price : -1})
         .limit(3)
     }
 
     public getTheMostExpensive(){
         const {ProductModel} = this.di
-        return ProductModel.find({}).sort({price : -1}).limit(6)
+        return ProductModel.find({}).sort({price : -1})
+        .populate('category')
+        .populate('user')
+        .populate('reviews.user')
+        .limit(6)
     }
 
     public async findByCategory(categoryName){

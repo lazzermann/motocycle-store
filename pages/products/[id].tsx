@@ -3,6 +3,7 @@ import Router, { withRouter, NextRouter } from 'next/router'
 import Layout from '../../components/Layout'
 import {xRead} from '../../model'
 import ProductModel from '../../src/Product'
+import Review from '../../components/Review'
 import { connect } from 'react-redux'
 import {fetchProductById} from '../../models/products'
 
@@ -28,36 +29,43 @@ class Product extends React.Component<WithRouterProps, IStates>{
         // const itemResponse = await xRead(`/product/${ctx.query.id}`)
         // const similarItemResponse = await xRead(`/product/similar/${ctx.query.id}`)
 
-        const [itemResponse, similarItemResponse] = await Promise.all([
-            xRead(`/product/${ctx.query.id}`).then((res) => res.data),
-            xRead(`/product/similar/${ctx.query.id}`).then((res) => {
-                console.log('Similar items result', res)
-                return res.data
-            })
-        ]);
+        // const [itemResponse, similarItemResponse] = await Promise.all([
+        //     xRead(`/product/${ctx.query.id}`).then((res) => res.data),
+        //     xRead(`/product/similar/${ctx.query.id}`).then((res) => {
+        //         // console.log('Similar items result', res)
+        //         return res.data
+        //     })
+        // ]);
 
+        
         return { 
-            item: itemResponse,
-            similarBikeItems: similarItemResponse
+            // item: itemResponse,
+            // similarBikeItems: similarItemResponse
         }
     }
 
     componentDidMount(){
         // const {fetchProductById} = this.props
         // fetchProductById({uri : `/product/${Router.query.id}`})
+        
+        const {fetchProductById} = this.props
+        fetchProductById({id : Router.query.id})
     }
 
     render(){
-        console.log(this.state.item)
+        const {product} = this.props
         let averageGradeMarkers = []
-        const prodCategories = this.state.item.category.map((item) => item.name.replace('_', ' ')).join(' - ')
-        const reviews = this.state.item.reviews.map((item) => {
-            return <Review review={item} />
-        })
+        console.log(product)
         
-        const averageGradeByReviews = this.state.item.reviews.reduce((acc, curr) =>{
+        const prodCategories = product ? product.category.map((item) => item.name.replace('_', ' ')).join(' - ') : []
+        const reviews = product ? product.reviews.map((item) => {
+            return <Review review={item} />
+        }) : []
+        
+        const averageGradeByReviews = product ? product.reviews.reduce((acc, curr) =>{
             return acc + curr.grade
-        }, 0) / this.state.item.reviews.length
+        }, 0) / product.reviews.length
+        : NaN
 
         console.log(averageGradeByReviews)
      
@@ -72,13 +80,18 @@ class Product extends React.Component<WithRouterProps, IStates>{
 
         return(
             <Layout>
-                <h1 className="mt-10 text-3xl text-center">{this.state.item.name}</h1>
+                <h1 className="mt-10 text-3xl text-center">
+                    {product ? product.name : "Test"}
+                </h1>
                 <section className="mt-4 mx-5 p-4 rounded-md bg-white flex flex-col items-center sm:flex-row sm:shadow-lg">
                     <div className="mx-auto sm:self-start sm:mx-0">
-                        <img className="rounded-md w-96 h-52" src={this.state.item.image} alt="" />
+                        
+                        <img className="rounded-md w-96 h-52" src={product ? product.image : "Test"} alt="" />
                         <div className="mt-2 text-sm text-gray-600 flex items-start sm:justify-center sm:items-center">
                             {averageGradeMarkers}
-                            <span className="ml-2 text-lg">{this.state.item.reviews.length} reviews</span>
+                            <span className="ml-2 text-lg">
+                                {product ? product.reviews.length : "Test"} 
+                            reviews</span>
                         </div>
                     </div>
     
@@ -88,17 +101,21 @@ class Product extends React.Component<WithRouterProps, IStates>{
                         <div className="pt-2">
                             <div className="flex hover:bg-gray-100 w-auto">
                                 <h1 className="font-semibold text-lg">Price :</h1>
-                                <span className="pl-6 -mt-0.5 text-2xl">{this.state.item.price} $</span>
+                                <span className="pl-6 -mt-0.5 text-2xl">
+                                    {product ? product.price : "Test"} 
+                                    $</span>
                             </div>
                             <div className="flex hover:bg-gray-100 w-auto">
                                 <h1 className="font-semibold text-lg">Type :</h1>
-                                <span className="pl-6 -mt-0.5 text-2xl">{prodCategories}</span>
+                                <span className="pl-6 -mt-0.5 text-2xl">
+                                    {prodCategories}
+                                    </span>
                             </div>
                         </div>
     
                         <div className="border-t-2 mt-2 border-gray-500">
                             <div className="my-4">
-                                {this.state.item.description}
+                                {product ? product.description : "Test"}
                             </div>
                         </div>
     
@@ -117,12 +134,12 @@ class Product extends React.Component<WithRouterProps, IStates>{
                 </section>
 
 
-                {/* <section className="p-3">
+                <section className="p-3">
                     <h2 className="text-center mt-6 text-3xl">Similar motorcycles</h2>
                     <div className="mt-6 flex flex-row justify-center flex-wrap">
                         
                     </div>
-                </section> */}
+                </section>
         </Layout>            
         )}
 }
@@ -130,7 +147,8 @@ class Product extends React.Component<WithRouterProps, IStates>{
 const mapStateToProps = (state) => {
     const { products } = state;
     return {
-        
+        products,
+        product : products.find((o) => o._id === Router.query.id)
     };
 };
 

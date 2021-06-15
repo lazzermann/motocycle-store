@@ -6,6 +6,7 @@ import { createWrapper, MakeStore } from 'next-redux-wrapper';
 import next from 'next';
 import { AppState } from './reducer';
 import rootReducer from './reducer';
+import {fromJS, List, Map} from 'immutable'
 
 // import {watchFetchUser} from '../actions/user'
 import { watchFetchProducts, watchFetchProductById } from '../models/products'

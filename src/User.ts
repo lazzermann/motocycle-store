@@ -1,3 +1,4 @@
+import { normalize, schema } from 'normalizr'
 export default interface User {
     _id: string;
     email: string;
@@ -7,3 +8,7 @@ export default interface User {
     password: string;
     image: string;
 }
+
+export const User = new schema.Entity('user', {},{
+    idAttribute : '_id'
+})

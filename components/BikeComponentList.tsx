@@ -43,7 +43,7 @@ export class BikeComponentList extends React.Component<IProps, IState>{
     render(){
         const {products} = this.props
         console.log("product list",products)
-        const bikeComps = products ? products.map((item) =>  <BikeComponent product={item} key={item._id.toString()} /> ) : []
+        const bikeComps = products.length ? products.map((item) =>  <BikeComponent product={item} key={item._id.toString()} /> ) : []
         return(
         <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
             {bikeComps}
