@@ -13,8 +13,18 @@ export default class ProductService extends BaseContext{
         .populate('reviews.user')
     }
 
-    public findSimilar(id){
+    public async findSimilar(id){
+        const {ProductModel} = this.di
+        const productByID = await this.findById(id)
+        console.log('Server prod by id select', productByID)
+        console.log('');
+        
+        // {price : {"$gte" : productByID.price, "$lte" : (productByID.price + 200)}}
 
+        return ProductModel.find({})
+        .where('fuelType', productByID.fuelType)
+        .sort({price : -1})
+        .limit(3)
     }
 
     public getTheMostExpensive(){

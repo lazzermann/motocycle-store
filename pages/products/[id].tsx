@@ -25,13 +25,26 @@ class Product extends React.Component<WithRouterProps, IStates>{
 
     static async getInitialProps(ctx) {
         console.log('Context : ' + ctx.query.id)
-        const res = await xRead(`/product/${ctx.query.id}`)
-        return { item: res.data}
+        // const itemResponse = await xRead(`/product/${ctx.query.id}`)
+        // const similarItemResponse = await xRead(`/product/similar/${ctx.query.id}`)
+
+        const [itemResponse, similarItemResponse] = await Promise.all([
+            xRead(`/product/${ctx.query.id}`).then((res) => res.data),
+            xRead(`/product/similar/${ctx.query.id}`).then((res) => {
+                console.log('Similar items result', res)
+                return res.data
+            })
+        ]);
+
+        return { 
+            item: itemResponse,
+            similarBikeItems: similarItemResponse
+        }
     }
 
     componentDidMount(){
-        const {fetchProductById} = this.props
-        fetchProductById({uri : `/product/${Router.query.id}`})
+        // const {fetchProductById} = this.props
+        // fetchProductById({uri : `/product/${Router.query.id}`})
     }
 
     render(){

@@ -20,9 +20,18 @@ export default class ProductController extends BaseContext{
 
     @GET()
     @route('/:id')
-    getAllProductsByCategory(req: Request, res: Response){
+    getProductByID(req: Request, res: Response){
         const {ProductService} = this.di
         return ProductService.findById(req.params.id)
+        .then((data) => res.answer(data, "Success", statusCode.OK))
+        .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
+    }
+
+    @GET()
+    @route('/similar/:id')
+    getSimilarProductsByID(req: Request, res: Response){
+        const {ProductService} = this.di
+        return ProductService.findSimilar(req.params.id)
         .then((data) => res.answer(data, "Success", statusCode.OK))
         .catch((err) => res.answer(null, err, statusCode.BAD_REQUEST))
     }
