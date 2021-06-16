@@ -1,5 +1,5 @@
 import React from "react"
-import {xRead} from '../model'
+import {xRead} from '../module'
 import Router from 'next/router'
 interface IProps{
 

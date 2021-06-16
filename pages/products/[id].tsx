@@ -1,11 +1,11 @@
 import React from "react"
 import Router, { withRouter, NextRouter } from 'next/router'
 import Layout from '../../components/Layout'
-import {xRead} from '../../model'
+import {xRead} from '../../module'
 import ProductModel from '../../src/Product'
 import Review from '../../components/Review'
 import { connect } from 'react-redux'
-import {fetchProductById} from '../../models/products'
+import {fetchProductById} from '../../redux/models/products'
 
 interface WithRouterProps {
     router: NextRouter,
@@ -53,9 +53,11 @@ class Product extends React.Component<WithRouterProps, IStates>{
     }
 
     render(){
-        const {product} = this.props
+        const {product, productById} = this.props
         let averageGradeMarkers = []
         console.log(product)
+        console.log(productById)
+        
         
         const prodCategories = product ? product.category.map((item) => item.name.replace('_', ' ')).join(' - ') : []
         const reviews = product ? product.reviews.map((item) => {
@@ -145,10 +147,13 @@ class Product extends React.Component<WithRouterProps, IStates>{
 }
 
 const mapStateToProps = (state) => {
-    const { products } = state;
+    const { product } = state;
+    let prodId = ''
+    console.log('product ', product)
+    
     return {
-        products,
-        product : products.find((o) => o._id === Router.query.id)
+        product,
+        // productById : product[Object.keys(product).find(((o) => o === Router.query.id))]
     };
 };
 

@@ -11,7 +11,7 @@ export default class ProductService extends BaseContext{
         return ProductModel.findById(id)
         .populate('category')
         .populate('user')
-        .populate('reviews.user')
+        .populate('reviews')
     }
 
     public async findSimilar(id){
@@ -25,6 +25,8 @@ export default class ProductService extends BaseContext{
         return ProductModel.find({})
         .where('fuelType', productByID.fuelType)
         .populate('category')
+        .populate('user')
+        .populate('reviews')
         .sort({price : -1})
         .limit(3)
     }
@@ -34,7 +36,7 @@ export default class ProductService extends BaseContext{
         return ProductModel.find({}).sort({price : -1})
         .populate('category')
         .populate('user')
-        .populate('reviews.user')
+        .populate('reviews')
         .limit(6)
     }
 

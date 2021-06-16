@@ -1,4 +1,41 @@
 import nextConfig from './next.config'
+import { normalize, schema } from 'normalizr'
+import  {Reviews} from './src/Review';
+import  {User}  from './src/User'
+import  {Categories} from './src/Category'
+import  {Product} from './src/Product'
+
+export class Entity {
+    protected schemaName
+    protected schemaStructure
+    protected schema
+
+    
+
+    constructor(schemaName, schemaStructure){
+        this.schemaName = schemaName
+        this.schemaStructure = schemaStructure
+        
+        this.schema = new schema.Entity(this.schemaName,
+            this.schemaStructure,{
+            idAttribute : '_id'
+        })
+    }
+
+}
+
+export class ProductEntity extends Entity{
+    constructor(){
+        super('product', {user : User, category : [Categories], reviews : [Reviews]})
+    }
+}
+
+export class UserEntity extends Entity{
+    constructor(){
+        super('user', {})
+        
+    }
+}
 
 export enum HTTP_METHOD{
     GET = 'GET',

@@ -1,5 +1,5 @@
 import {action} from './actions'
-import {xRead} from '../model'
+import {xRead} from '../../module'
 import {take, call, put} from 'redux-saga/effects'
 
 export const FETCH_USER  = 'FETCH_USER'

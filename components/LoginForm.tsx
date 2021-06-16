@@ -2,7 +2,7 @@ import dynamic from "next/dynamic"
 import React from "react"
 import Link from 'next/link'
 import Router  from 'next/router'
-import { xSave } from '../model' 
+import { xSave } from '../module' 
 interface WithRouterProps{
     // router : NextRouter
 }

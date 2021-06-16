@@ -1,4 +1,4 @@
-import {xRead} from '../../model'
+import {xRead} from '../../module'
 import ProductModel from '../../src/Product'
 import BikeComponentList from '../../components/BikeComponentList'
 import Layout from '../../components/Layout'

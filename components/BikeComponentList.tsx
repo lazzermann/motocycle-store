@@ -3,8 +3,8 @@ import React from "react"
 import BikeComponent from './BikeComponent'
 import Product from '../src/Product' 
 import { connect } from 'react-redux'
-import {fetchProducts} from '../models/products'
-import {xRead} from '../model'
+import {fetchProducts} from '../redux/models/products'
+import {xRead} from '../module'
 
 interface IProps{
     fetchProducts: () => void;
@@ -24,26 +24,20 @@ export class BikeComponentList extends React.Component<IProps, IState>{
     }
 
     componentDidMount(){
-        // let data = xRead('/product/').then((data)=>{
-        //     if(!data.res.ok){
-
-        //     }
-
-        //     else{
-        //     this.setState<typeof data.json.data>({
-        //         items : data.json.data
-        //     })
-        // }
-        // })
-
         const {fetchProducts} = this.props
         fetchProducts()
     }
 
     render(){
-        const {products} = this.props
-        console.log("product list",products)
-        const bikeComps = products.length ? products.map((item) =>  <BikeComponent product={item} key={item._id.toString()} /> ) : []
+        const {product} = this.props
+        console.log("product list",product)
+        // const bikeComps = product.length ? product.map((item) =>  <BikeComponent product={item} key={item._id.toString()} /> ) : []
+        let bikeComps = []
+        for(let i in product){
+            if(product.hasOwnProperty(i)){
+                bikeComps.push(<BikeComponent product={product[i]} key={product[i]._id.toString()} />)
+            }
+        }
         return(
         <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
             {bikeComps}
@@ -53,9 +47,9 @@ export class BikeComponentList extends React.Component<IProps, IState>{
 }
 
 const mapStateToProps = (state) => {
-    const { products } = state;
+    const { product } = state;
     return {
-        products
+        product
     };
 };
 

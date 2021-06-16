@@ -1,7 +1,8 @@
-import { HYDRATE } from "next-redux-wrapper";
-import { AnyAction, combineReducers } from "redux";
+import { fromJS, List, Map } from 'immutable'
+import { HYDRATE } from "next-redux-wrapper"
+import { AnyAction, combineReducers } from "redux"
 
-import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from '../models/products'
+import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from './models/products'
 
 export interface AppState {
     users: any,
@@ -26,19 +27,16 @@ const nextReducer = (
     }   
 };
 
-function products(state = [], action: any) {
+const stateInit = fromJS({})
+
+function entities(state = stateInit, action: any) {
     
     switch(action.type){
         case REQUEST_PRODUCTS:{
-            const data = JSON.parse(JSON.stringify(action.data));
-            console.log('action data', action.data)
+            const data = JSON.parse(JSON.stringify(action.entities));
+            console.log('action data', data)
             
-            return ([
-                ...state,
-                ...data
-            ])
-
-            // return [...data]
+            return data
         }
             
         default:
@@ -46,17 +44,17 @@ function products(state = [], action: any) {
     }
 }
 
-function users(state = [], action: any) {
-    return state;
-}
+// function users(state = [], action: any) {
+//     return state;
+// }
 
-const appReducer = combineReducers({
-    products,
-    users
-});
+// const appReducer = combineReducers({
+//     products,
+//     users
+// });
 
 function rootReducer(state, action) {
-    const intermediateState = appReducer(state, action);
+    const intermediateState = entities(state, action);
     const finalState = nextReducer(intermediateState, action);
     return finalState;
 }
