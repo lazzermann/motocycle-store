@@ -42,7 +42,7 @@ export const makeStore: MakeStore<AppState> = () => {
         // other store enhancers if any
     );
 
-    const store = createStore(rootReducer, enhancer) as SagaStore;
+    const store = createStore(rootReducer, {entities : undefined}, enhancer) as SagaStore;
     store.sagaTask = sagaMiddleware.run(rootSaga);
     // Entity.store = store;
     store.runSaga = () => sagaMiddleware.run(rootSaga);

@@ -1,13 +1,26 @@
 import { fromJS, List, Map } from 'immutable'
 import { HYDRATE } from "next-redux-wrapper"
 import { AnyAction, combineReducers } from "redux"
-
+import {REQUEST_RESULT} from './models/entity'
 import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from './models/products'
+import {isEmpty} from '../src/common'
 
 export interface AppState {
-    users: any,
-    products: any,
+    // entities:{
+    //     user : any,
+    //     product : any,
+    //     category : any,
+    //     reviews : any
+    // }
+
+    entities: Map<string, Map<string, any>>,
+
+    isHydrate: boolean;
+    // users: any,
+    // products: any,
 }
+
+const HYDRATE_ACTION = 'HYDRATE_ACTION'
 
 const nextReducer = (
     state: AppState,
@@ -18,6 +31,9 @@ const nextReducer = (
             if (action.payload.app === 'init') delete action.payload.app;
             if (action.payload.page === 'init') delete action.payload.page;
             return {...state, ...action.payload};
+            if (!state.isHydrate) {
+                return { ...state };
+            }
         case 'APP':
             return {...state, app: action.payload};
         case 'PAGE':
@@ -32,11 +48,29 @@ const stateInit = fromJS({})
 function entities(state = stateInit, action: any) {
     
     switch(action.type){
-        case REQUEST_PRODUCTS:{
-            const data = JSON.parse(JSON.stringify(action.entities));
-            console.log('action data', data)
+        case REQUEST_RESULT :{
+            const { data : {entities} } = action;
+            // if(entities){
+            //     const newData = fromJS(action.data.entities);
+            //     console.log(newData)
+            //     state = isEmpty(state) ? newData: state.mergeDeep(newData);
+            // }
             
-            return data
+            if(entities){
+                Object.keys(entities).map((entityName) =>{
+                    let list = state.get(entityName)
+                    if(list && list.size > 0){
+                        Object.keys(entities[entityName]).map((id) => list = list.remove(id))
+                    }
+
+                    state = state.set(entityName, list)
+                })
+            
+                state = state.mergeDeep(fromJS(entities))
+            }
+
+            
+            return state
         }
             
         default:
@@ -44,17 +78,25 @@ function entities(state = stateInit, action: any) {
     }
 }
 
+function isHydrate(state = true, action: any) {
+    switch (action.type) {
+    case HYDRATE_ACTION:
+        return action.value;
+    }
+    return state;
+}
+
 // function users(state = [], action: any) {
 //     return state;
 // }
 
-// const appReducer = combineReducers({
-//     products,
-//     users
-// });
+const appReducer = combineReducers({
+    entities,
+    isHydrate
+});
 
 function rootReducer(state, action) {
-    const intermediateState = entities(state, action);
+    const intermediateState = appReducer(state, action);
     const finalState = nextReducer(intermediateState, action);
     return finalState;
 }

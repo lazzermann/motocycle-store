@@ -1,13 +1,17 @@
 import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
-import {put} from 'redux-saga/effects'
+import {put, call} from 'redux-saga/effects'
 import parseJSON from 'parse-json'
+import {action} from './actions'
 
 export enum HTTP_METHOD{
     GET = 'GET',
     POST = 'POST',
     DELETE = 'DELETE'
 }
+
+export const REQUEST_RESULT = 'REQUEST_RESULT';
+export const requestResult = (entityName: string, data: any) => action(REQUEST_RESULT, { entityName, data });
 
 export class Entity {
     protected schemaName
@@ -27,7 +31,8 @@ export class Entity {
 
         this.xFetch = this.xFetch.bind(this)
         this.xRead = this.xRead.bind(this)
-        this.xSave = this.xRead.bind(this)
+        this.xSave = this.xSave.bind(this)
+        this.actionRequest = this.actionRequest.bind(this)
     }
 
     public static getWatchers(){
@@ -42,7 +47,7 @@ export class Entity {
         Entity.setWatchers(Entity.getWatchers().concat(watchers));
     }
 
-    public * xFetch(endpoint: string, func: Function, isNormalizeMany : boolean, method: HTTP_METHOD, data : any){
+    public xFetch(endpoint: string, method: HTTP_METHOD, data : any){
         let fullUrl = nextConfig.public.BASE_URL + '/' + endpoint;
 
         const params: any = {
@@ -64,25 +69,46 @@ export class Entity {
 
         let normalizedData;
         
-        yield fetch(fullUrl, params)
-            .then((response) => {
-                return response.json().then((json) => ({ json, response }));
+        // yield fetch(fullUrl, params)
+        //     .then((response) => {
+        //         return response.json().then((json) => ({ json, response }));
+        //     })
+
+        //     .then(({ json, response }) => {
+        //         normalizedData = normalize(json.data, isNormalizeMany ? [this.schema] : this.schema);
+        //         console.log('normalized: ', normalizedData);                
+        //     });
+
+        return fetch(fullUrl, params)
+        .then((response) => {
+            return response.json().then((json) => ({ json, response }));
+        }).then(({ json, response }) =>
+            Promise.resolve({
+                success: response.ok ? true : false,
+                response: json
             })
+        );
 
-            .then(({ json, response }) => {
-                normalizedData = normalize(json.data, isNormalizeMany ? [this.schema] : this.schema);
-                console.log('normalized: ', normalizedData);                
-            });
-
-        yield put(func(normalizedData));   
+        // yield put(func(normalizedData));   
     }
 
-    public * xRead(uri: string, func: Function, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.GET){
-        yield  this.xFetch(uri, func, isNormalizeMany, HTTP_METHOD.GET, data)
+    public * actionRequest (endpoint: string, isNormalizeMany : boolean, method: HTTP_METHOD, data: any, token?: string) {
+
+        const { response } = yield call(this.xFetch, endpoint, method, data);
+
+        const normalizedData = normalize(response.data, isNormalizeMany? [this.schema] : this.schema);
+        console.log('Normalized: ', normalizedData);   
+        
+        yield put(requestResult(this.schemaName, normalizedData));  
+        return { ...response };
+    }
+    public xRead(uri: string,  isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.GET){
+        return this.actionRequest(uri, isNormalizeMany, method, data);
     }
 
-    public * xSave(uri: string, func: Function, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
-        yield this.xFetch(uri, func, isNormalizeMany, HTTP_METHOD.POST, data)
+
+    public * xSave(uri: string, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
+        return this.actionRequest(uri, isNormalizeMany, method, data);
     }
 }
 

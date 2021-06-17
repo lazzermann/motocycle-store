@@ -6,93 +6,65 @@ import ProductModel from '../../src/Product'
 import Review from '../../components/Review'
 import { connect } from 'react-redux'
 import {fetchProductById} from '../../redux/models/products'
-
+import {isEmpty} from '../../src/common'
+import { List, Map } from 'immutable'
 interface WithRouterProps {
     router: NextRouter,
-    item: ProductModel
+    product: Map<string, any>,
+    reviews: Map<string, any>,
+    categories: Map<string, any>,
+    users: Map<string, any>,
+    fetchProductById: (id: string | string[]) => void;
 }
 
 interface IStates{
-    item : ProductModel
 }
 
 class Product extends React.Component<WithRouterProps, IStates>{
     constructor(props){
         super(props)
         this.state = {
-            item : this.props.item
         }
     }
 
-    static async getInitialProps(ctx) {
-        console.log('Context : ' + ctx.query.id)
-        // const itemResponse = await xRead(`/product/${ctx.query.id}`)
-        // const similarItemResponse = await xRead(`/product/similar/${ctx.query.id}`)
-
-        // const [itemResponse, similarItemResponse] = await Promise.all([
-        //     xRead(`/product/${ctx.query.id}`).then((res) => res.data),
-        //     xRead(`/product/similar/${ctx.query.id}`).then((res) => {
-        //         // console.log('Similar items result', res)
-        //         return res.data
-        //     })
-        // ]);
-
-        
-        return { 
-            // item: itemResponse,
-            // similarBikeItems: similarItemResponse
-        }
-    }
-
-    componentDidMount(){
-        // const {fetchProductById} = this.props
-        // fetchProductById({uri : `/product/${Router.query.id}`})
-        
+    componentDidMount(){        
         const {fetchProductById} = this.props
-        fetchProductById({id : Router.query.id})
+        fetchProductById(this.props.router.query.id)
     }
 
     render(){
-        const {product, productById} = this.props
-        let averageGradeMarkers = []
-        console.log(product)
-        console.log(productById)
-        
-        
-        const prodCategories = product ? product.category.map((item) => item.name.replace('_', ' ')).join(' - ') : []
-        const reviews = product ? product.reviews.map((item) => {
-            return <Review review={item} />
-        }) : []
-        
-        const averageGradeByReviews = product ? product.reviews.reduce((acc, curr) =>{
-            return acc + curr.grade
-        }, 0) / product.reviews.length
-        : NaN
+        const { product, reviews, categories, users } = this.props;
+        console.log('Cat', categories);
+        const reviewItems = reviews ? reviews.valueSeq().map(
+            (item) => { 
+                console.log('User ID = ', item.get('user'));
+                console.log('User Item = ', users.get(item.get('user')));
 
-        console.log(averageGradeByReviews)
+                return <Review key={item.get('_id')} review={item} user={users && users.get(item.get('user'))} /> 
+            }
+        ) : []
+        const averageGradeByReviews = reviews ? reviews.reduce((acc, curr) =>acc + curr.get('grade'), 0) / reviews.size : 0;
+
      
-        for(let i = 1; i <= 5; i++){
-            if(i <= averageGradeByReviews){
-                averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
-            }
-            else{
-                averageGradeMarkers.push(<svg className="h-6 w-6 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>)
-            }
-        }
+        const averageGradeMarkers = Array.from([1,2,3,4,5])
+            .map(i => {
+                const color = i <= averageGradeByReviews ? 'green' : 'gray';
+                return <svg key={'grade_svg_' + i} className={`h-6 w-6 fill-current text-${color}-500`} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" /></svg>;
+            }); 
 
         return(
             <Layout>
                 <h1 className="mt-10 text-3xl text-center">
-                    {product ? product.name : "Test"}
+                    {product && product.get('name')}
                 </h1>
                 <section className="mt-4 mx-5 p-4 rounded-md bg-white flex flex-col items-center sm:flex-row sm:shadow-lg">
                     <div className="mx-auto sm:self-start sm:mx-0">
                         
-                        <img className="rounded-md w-96 h-52" src={product ? product.image : "Test"} alt="" />
+                        <img className="rounded-md w-96 h-52" src={product ? product.get('image') : ''} alt="" />
                         <div className="mt-2 text-sm text-gray-600 flex items-start sm:justify-center sm:items-center">
                             {averageGradeMarkers}
                             <span className="ml-2 text-lg">
-                                {product ? product.reviews.length : "Test"} 
+                                {reviews && reviews.size } 
                             reviews</span>
                         </div>
                     </div>
@@ -104,20 +76,22 @@ class Product extends React.Component<WithRouterProps, IStates>{
                             <div className="flex hover:bg-gray-100 w-auto">
                                 <h1 className="font-semibold text-lg">Price :</h1>
                                 <span className="pl-6 -mt-0.5 text-2xl">
-                                    {product ? product.price : "Test"} 
+                                    {product && product.get('price') } 
                                     $</span>
                             </div>
                             <div className="flex hover:bg-gray-100 w-auto">
                                 <h1 className="font-semibold text-lg">Type :</h1>
                                 <span className="pl-6 -mt-0.5 text-2xl">
-                                    {prodCategories}
-                                    </span>
+                                {
+                                    categories && categories.reduce((a, v) => {console.log(v.get('name')); return(a ? '-' : '') + v.get('name')}, '')
+                                }
+                                </span>
                             </div>
                         </div>
     
                         <div className="border-t-2 mt-2 border-gray-500">
                             <div className="my-4">
-                                {product ? product.description : "Test"}
+                                { product && product.get('description') }
                             </div>
                         </div>
     
@@ -132,7 +106,7 @@ class Product extends React.Component<WithRouterProps, IStates>{
 
                 <section className="p-3 rounded-lg justify-center">
                     <h2 className="mt-2 text-4xl text-center">Reviews</h2>
-                    {reviews}
+                    {reviewItems}
                 </section>
 
 
@@ -146,17 +120,39 @@ class Product extends React.Component<WithRouterProps, IStates>{
         )}
 }
 
-const mapStateToProps = (state) => {
-    const { product } = state;
-    let prodId = ''
-    console.log('product ', product)
-    
+const mapStateToProps = (state, props) => {
+    let users = null;
+    const { entities } = state;
+    const {router} = props
+   
+    let reviews = null;
+    let categories = null;
+    const product = !isEmpty(entities) && entities.getIn(['product', router.query.id]);
+    if (product) {
+        const ar = entities.get('reviews');
+        reviews = product
+            .get('reviews')
+            .reduce((accum, data) => (ar.get(data) ? accum.push(ar.get(data)) : accum), List())
+
+        const ct = entities.get('category');
+        categories = product
+            .get('category')
+            .reduce((accum, data) => (ct.get(data) ? accum.push(ct.get(data)) : accum), List())
+
+        const u = entities.get('user');
+        users = reviews
+            .map(r => r.get('user'))
+            .reduce((accum, key) => (u.get(key) ? accum.set(key, u.get(key)) : accum), Map())
+        
+    }
     return {
         product,
-        // productById : product[Object.keys(product).find(((o) => o === Router.query.id))]
+        reviews,
+        categories,
+        users,
     };
 };
 
-export default connect(mapStateToProps, { fetchProductById  })(Product);
-
+const idPage =  connect(mapStateToProps, { fetchProductById  })(Product);
+export default withRouter(idPage)
 // export default Product

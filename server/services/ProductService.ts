@@ -11,7 +11,7 @@ export default class ProductService extends BaseContext{
         return ProductModel.findById(id)
         .populate('category')
         .populate('user')
-        .populate('reviews')
+        .populate('reviews.user')
     }
 
     public async findSimilar(id){
