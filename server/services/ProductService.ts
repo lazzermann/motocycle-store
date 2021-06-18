@@ -19,16 +19,18 @@ export default class ProductService extends BaseContext{
         const productByID = await this.findById(id)
         console.log('Server prod by id select', productByID)
         console.log('');
+        let price = productByID.price
+        console.log('ID PRICE SERVER',price, typeof price)
         
         // {price : {"$gte" : productByID.price, "$lte" : (productByID.price + 200)}}
 
-        return ProductModel.find({})
+        return ProductModel.find({'category' : { $in : productByID.category}})
         .where('fuelType', productByID.fuelType)
+        .where('price').gt((price - 200) > 0 ? price - 200 : price).lt(price + 250)
         .populate('category')
         .populate('user')
         .populate('reviews')
         .sort({price : -1})
-        .limit(3)
     }
 
     public getTheMostExpensive(){

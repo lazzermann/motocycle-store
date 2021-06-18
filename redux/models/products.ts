@@ -37,7 +37,7 @@ export class ProductEntity extends Entity{
         while(true){
             const fetchedProduct = yield take(FETCH_PRODUCT_BY_ID)
             yield call(this.xRead, `product/${fetchedProduct.id}`, false)
-        
+            yield call(this.xRead, `product/similar/${fetchedProduct.id}`, true)
         }
     }
 }

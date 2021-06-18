@@ -45,9 +45,14 @@ module.exports = {
         _id: mongoose.Types.ObjectId(),
         category: [categories[faker.random.number({'min': 0, 'max' : 3})]._id, categories[faker.random.number({'min': 0, 'max' : 3})]._id],
         user: users[i]._id,
-        reviews: [],
+        reviews: [{
+          user : users[i]._id,
+          grade : faker.random.number({'min': 0, 'max' : 5}),
+          text : faker.lorem.sentence(),
+          _id : mongoose.Types.ObjectId()
+        }],
         name: faker.vehicle.vehicle(),
-        price: faker.commerce.price(),
+        price: parseInt(faker.commerce.price()),
         fuelType: 'gasoline',
         description: faker.lorem.sentence(),
         image: 'https://robohash.org/' + faker.internet.password()

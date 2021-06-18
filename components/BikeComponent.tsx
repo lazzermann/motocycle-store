@@ -2,9 +2,14 @@ import Link from 'next/link'
 import Product from 'src/Product'
 import React from "react";
 import { render } from 'react-dom';
+import Review from 'src/Review';
+import {Map, List} from 'immutable'
+import Router, { withRouter, NextRouter } from 'next/router'
 
 interface MyProps {
-  product: Product
+  product: Map<string, any>
+  reviews : List<any>
+  router : NextRouter
 }
 
 interface MyState {
@@ -20,16 +25,21 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
     }
   }
 
+  // RouterPushClick(){
+  //   Router.push(`/products/${this.props.product.get('_id')}`, undefined, {shallow : true})    
+  // }
+
   render() {
-    console.log('Bike comp item', this.props.product)
+    console.log('ROUTER',this.props.router)
+    console.log('Bike comp item', this.props.product, this.props.reviews)
     let averageGradeMarkers = []
     
 
     let averageGradeByReviews = 0
-    if (this.props.product.get('reviews').size) {
-      averageGradeByReviews =  this.props.product.reviews.reduce((acc, curr) => {
-        return acc + curr.grade
-      }, 0) / this.props.product.get('reviews').size
+    if (this.props.reviews && this.props.reviews.size) {
+      averageGradeByReviews =  this.props.reviews && this.props.reviews.reduce((acc, curr) => {
+        return acc + curr.get('grade')
+      }, 0) / this.props.reviews.size
     }
     
 
@@ -47,7 +57,7 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
     return (
       <div className="my-2 max-w-xs rounded-md bg-white flex-col sm:mx-10">
         <Link href={`/products/${this.props.product.get('_id')}`}>
-          <img className="rounded-t-md" width="400" height="150" src={this.props.product.get('image')} alt="" />
+          <img  className="rounded-t-md" width="400" height="150" src={this.props.product.get('image')} alt="" />
         </Link>
         <div className="">
           <Link href={`/products/${this.props.product.get('_id')}`}>
@@ -56,7 +66,7 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
           <h2 className="pl-2 font-medium text-xl">Price: {this.props.product.get('price')}$</h2>
           <div className="text-sm pl-2 pb-3 text-gray-600 mt-2 flex items-center">
             {averageGradeMarkers}
-            <span className="ml-2">{this.props.product.get('reviews').size} reviews</span>
+            <span className="ml-2">{this.props.reviews ? this.props.reviews.size : 0 + ' reviews'}</span>
           </div>
         </div>
       </div>

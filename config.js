@@ -15,7 +15,7 @@ const prodConfig = {
     dev: isDev,
     debug_mode: process.env.DEBUG_MODE,
  mongo: {
-        uri: process.env.MONGO_URL|| 'mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/prodBase?retryWrites=true&w=majority',
+        uri: process.env.MONGO_URL|| 'mongodb+srv://lazer:lazer@test.b1h2b.mongodb.net/finalDB?retryWrites=true&w=majority',
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
