@@ -95,10 +95,11 @@ const appReducer = combineReducers({
     isHydrate
 });
 
-function rootReducer(state, action) {
-    const intermediateState = appReducer(state, action);
-    const finalState = nextReducer(intermediateState, action);
-    return finalState;
-}
+// function rootReducer(state, action) {
+//     const intermediateState = appReducer(state, action);
+//     const finalState = nextReducer(intermediateState, action);
+//     return finalState;
+// }
 
-export default rootReducer; 
+// export default rootReducer; 
+export default appReducer
