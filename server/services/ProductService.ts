@@ -20,7 +20,7 @@ export default class ProductService extends BaseContext{
         console.log('Server prod by id select', productByID)
         console.log('');
         let price = productByID.price
-        console.log('ID PRICE SERVER',price, typeof price)
+        // console.log('ID PRICE SERVER',price, typeof price)
         
         // {price : {"$gte" : productByID.price, "$lte" : (productByID.price + 200)}}
 

@@ -1,7 +1,6 @@
 import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
 import {put, call} from 'redux-saga/effects'
-import parseJSON from 'parse-json'
 import {action} from './actions'
 
 export enum HTTP_METHOD{
@@ -48,6 +47,7 @@ export class Entity {
     }
 
     public xFetch(endpoint: string, method: HTTP_METHOD, data : any){
+        console.log('HTTP_METHOD', method)
         let fullUrl = nextConfig.public.BASE_URL + '/' + endpoint;
 
         const params: any = {

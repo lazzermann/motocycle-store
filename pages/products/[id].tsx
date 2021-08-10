@@ -16,7 +16,7 @@ interface WithRouterProps {
     categories: Map<string, any>,
     users: Map<string, any>,
     similarProducts: List<any>,
-    similarProductsReviewsMap: Map<string, any>,
+    reduxReviews: Map<string, any>,
     fetchProductById: (id: string | string[]) => void;
 }
 
@@ -40,14 +40,15 @@ class Product extends React.Component<WithRouterProps, IStates>{
 
 
     componentDidMount() {
-        console.log('[ID] DID MOUNT')
+        // console.log('[ID] DID MOUNT')
 
         const { fetchProductById } = this.props
         fetchProductById(this.props.router.query.id)
+        console.log('fetchProductById')
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('STATE DID UPDATE', this.state.productId)
+        // console.log('STATE DID UPDATE', this.state.productId)
 
         if (prevState.productId !== this.props.router.query.id) {
             this.setState({productId : this.props.router.query.id})
@@ -57,7 +58,8 @@ class Product extends React.Component<WithRouterProps, IStates>{
     }
 
     render() {
-        const { product, reviews, categories, users, similarProducts, similarProductsReviewsMap } = this.props;
+        const { product, reviews, categories, users, similarProducts, reduxReviews } = this.props;
+        console.log('reviews', reviews)
         const reviewItems = reviews ? reviews.valueSeq().map(
             (item) => {
                 return <Review key={item.get('_id')} review={item} user={users && users.get(item.get('user'))} />
@@ -134,7 +136,15 @@ class Product extends React.Component<WithRouterProps, IStates>{
                     <div className="mt-6 flex flex-row justify-center flex-wrap">
                         {
                             similarProducts && similarProducts.valueSeq().map(simProd => {
-                                return <BikeComponent product={simProd} reviews={null} />
+                                console.log('SimProdInMap:',  simProd)
+                                console.log('RewIdList:',simProd.get('reviews').toArray())
+                                
+                                let similarRevs = simProd.get('reviews').toArray().length !== 0 ?
+                                    simProd.get('reviews').toArray().map((x) => reduxReviews.get(x)) : null
+
+                                    console.log('similarRevs', similarRevs)
+                                    
+                                return <BikeComponent product={simProd} reviews={similarRevs} />
                             })
                         }
                     </div>
@@ -152,7 +162,7 @@ const mapStateToProps = (state, props) => {
     let reviews = null
     let categories = null
     let similarProducts = null
-    let similarProductsReviewsMap = null
+    let reduxReviews = null
 
     const product = !isEmpty(entities) && entities.getIn(['product', router.query.id]);
     if (product) {
@@ -185,10 +195,6 @@ const mapStateToProps = (state, props) => {
         similarProducts = random.reduce((accum, item) => {
             return accum.size < 4 ? accum.push(item) : accum
         }, List())
-
-        // .sort((a, b) => b.get('price') - b.get('price'))
-        
-        console.log('similarProducts', similarProducts)
         
         // similarProductsReviewsMap = similarProducts && similarProducts.valueSeq().reduce((acc,prod) =>{
         //     console.log('acc', prod)
@@ -198,7 +204,7 @@ const mapStateToProps = (state, props) => {
         //     }, Map()), List())
 
         // })
-
+        reduxReviews = entities.get('reviews')
     }
     return {
         product,
@@ -206,7 +212,7 @@ const mapStateToProps = (state, props) => {
         categories,
         users,
         similarProducts,
-        similarProductsReviewsMap
+        reduxReviews
     };
 };
 

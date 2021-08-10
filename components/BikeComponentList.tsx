@@ -37,13 +37,9 @@ export class BikeComponentList extends React.Component<IProps, IState>{
         return(
         <div className="px-4 py-2  my-4 flex flex-row flex-wrap justify-center">
             {
-                products && products.valueSeq().map((prod: any, i: number) =>{
-                    let revs = reviews.reduce((accum, reviewMap) => {
-                        console.log('Accum', accum)
-                        console.log(reviewMap)
-                        
-                        return prod.get('reviews').includes(reviewMap.get('_id')) && accum.size <= 6 ? accum.push(reviewMap) : accum
-                    }, List())
+                products && products.valueSeq().map((prod: any) =>{
+                    let revs = prod.get('reviews').toArray().length !== 0 ?
+                        prod.get('reviews').toArray().map((x) => reviews.get(x)) : null
                     return <BikeComponent product={prod} reviews={revs} key={prod._id} />
                 }
                 )

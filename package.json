@@ -19,6 +19,7 @@
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "faker": "^5.5.3",
+    "humps": "^2.0.1",
     "immutable": "^4.0.0-rc.12",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",

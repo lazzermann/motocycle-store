@@ -8,7 +8,7 @@ import Router, { withRouter, NextRouter } from 'next/router'
 
 interface MyProps {
   product: Map<string, any>
-  reviews : List<any>
+  reviews : any
   router : NextRouter
 }
 
@@ -30,20 +30,22 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
   // }
 
   render() {
-    console.log('ROUTER',this.props.router)
-    console.log('Bike comp item', this.props.product, this.props.reviews)
+    // console.log('ROUTER',this.props.router)
+    // console.log('Bike comp item', this.props.product, this.props.reviews)
     let averageGradeMarkers = []
     
 
     let averageGradeByReviews = 0
-    if (this.props.reviews && this.props.reviews.size) {
+    
+    if (this.props.reviews && this.props.reviews.length) {
       averageGradeByReviews =  this.props.reviews && this.props.reviews.reduce((acc, curr) => {
+        console.log('acc', acc)
         return acc + curr.get('grade')
-      }, 0) / this.props.reviews.size
+      }, 0) / this.props.reviews.length
     }
     
 
-    console.log(averageGradeByReviews)
+    console.log('averageGradeByReviews',averageGradeByReviews)
 
     for (let i = 1; i <= 5; i++) {
       if (i <= averageGradeByReviews) {
@@ -64,10 +66,12 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
             <a className="pl-2 pb-1 font-semibold text-xl">{this.props.product.get('name')}</a>
           </Link>
           <h2 className="pl-2 font-medium text-xl">Price: {this.props.product.get('price')}$</h2>
+          
           <div className="text-sm pl-2 pb-3 text-gray-600 mt-2 flex items-center">
             {averageGradeMarkers}
             <span className="ml-2">{this.props.reviews ? this.props.reviews.size : 0 + ' reviews'}</span>
           </div>
+        
         </div>
       </div>
     )
