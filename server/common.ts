@@ -14,6 +14,11 @@ export interface Identity {
     image: string
 }
 
+export interface SagaAction{
+    saga : () => void
+    trigger : (data : any) => void
+}
+
 
 export const IGNORS = [
     '/favicon.ico',

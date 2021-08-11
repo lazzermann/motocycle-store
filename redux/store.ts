@@ -20,7 +20,7 @@ declare global {
 
 const rootSaga = function* root() {
     yield all(
-        Entity.getWatchers().map((x) => x())
+        Entity.getSagas()
     );
 };
 

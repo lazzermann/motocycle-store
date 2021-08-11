@@ -5,12 +5,13 @@ import Product from '../src/Product'
 import { connect } from 'react-redux'
 import {fetchProducts} from '../redux/models/products'
 import {xRead} from '../module'
+import {Entity} from '../redux/models/entity'
 import {isEmpty} from '../src/common'
 import { Reviews } from "src/Review"
 import {Map, List} from 'immutable'
 
 interface IProps{
-    fetchProducts: () => void;
+    fetchProducts: (data: any) => void;
 }
 interface IState{
     items: Array<Product>
@@ -28,7 +29,10 @@ export class BikeComponentList extends React.Component<IProps, IState>{
     
     componentDidMount(){
         const {fetchProducts} = this.props
-        fetchProducts()
+        console.log('1',Entity.getTriggers())
+        console.log('2',fetchProducts)
+        
+        fetchProducts({})
     }
 
     render(){
@@ -57,4 +61,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { fetchProducts  })(BikeComponentList);
+export default connect(mapStateToProps, Entity.getTriggers())(BikeComponentList);

@@ -2,6 +2,7 @@ import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
 import {put, call} from 'redux-saga/effects'
 import {action} from './actions'
+import { SagaAction } from 'server/common';
 
 export enum HTTP_METHOD{
     GET = 'GET',
@@ -18,7 +19,8 @@ export class Entity {
     protected schema
 
     private static watchers: Function[] = [];
-    
+    private static actions: {[key: string] : SagaAction} = {}
+
     constructor(schemaName, schemaStructure){
         this.schemaName = schemaName
         this.schemaStructure = schemaStructure
@@ -28,10 +30,43 @@ export class Entity {
             idAttribute : '_id'
         })
 
+        const instanceOnly = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
+        .filter(prop => prop != "constructor")
+
+        instanceOnly.forEach((functionName, i) => { 
+            this[functionName] = this[functionName].bind(this);
+            Entity.addWatcher([this[functionName]]);
+            console.log(functionName)
+            
+            Entity.actions[functionName] = {
+                saga : this[functionName],
+                trigger : (data: any) => action(functionName.toUpperCase(), data)
+            } 
+
+            console.log(Entity.actions)
+        });
+
+        
+        
+
         this.xFetch = this.xFetch.bind(this)
         this.xRead = this.xRead.bind(this)
         this.xSave = this.xSave.bind(this)
         this.actionRequest = this.actionRequest.bind(this)
+    }
+
+    public static getSagas(){
+        return Object
+                .keys(Entity.actions)
+                .map(key => Entity.actions[key].saga())
+    }
+
+    public static getTriggers(){
+        const list = {}
+        Object
+            .keys(Entity.actions)
+            .map(key => list[key] = Entity.actions[key].trigger)
+        return list
     }
 
     public static getWatchers(){

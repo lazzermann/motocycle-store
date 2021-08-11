@@ -10,24 +10,18 @@ export const REQUEST_PRODUCTS = 'REQUEST_PRODUCTS'
 export const FETCH_PRODUCT_BY_ID = 'FETCH_PRODUCT_BY_ID' 
 
 export const fetchProducts = (data: any) => action(FETCH_PRODUCTS, data)
-export const fetchProductById = (id : string | string[]) => action(FETCH_PRODUCT_BY_ID, { id })
+export const fetchProductById = (data: any) => action(FETCH_PRODUCT_BY_ID, data)
 export const requestProducts = (data: any) => action(REQUEST_PRODUCTS, data)
 
 export class ProductEntity extends Entity{
     constructor(){
         super('product', {user : User, category : [Categories], reviews : [Reviews]})
-        this.watchFetchProducts = this.watchFetchProducts.bind(this)
-        this.watchFetchProductById = this.watchFetchProductById.bind(this)
-
-        Entity.addWatcher([
-            this.watchFetchProducts,
-            this.watchFetchProductById
-        ])
     }
 
-    public * watchFetchProducts(){
+    public * fetchProducts(){
         while(true) {
-            const fetchedData = yield take(FETCH_PRODUCTS)
+            console.log('FetchProducts')
+            const fetchedData = yield take('FetchProducts'.toUpperCase())
             yield call(this.xRead, 'product', true)
         }
     }
@@ -35,6 +29,7 @@ export class ProductEntity extends Entity{
 
     public* watchFetchProductById(){
         while(true){
+            console.log('watchFetchProductById')
             const fetchedProduct = yield take(FETCH_PRODUCT_BY_ID)
             yield call(this.xRead, `product/${fetchedProduct.id}`, false)
             yield call(this.xRead, `product/similar/${fetchedProduct.id}`, true)
@@ -73,5 +68,15 @@ export class ProductEntity extends Entity{
 //         yield put(requestProducts(normalizeData))
 //     }
 // }
+
+// const productEntity = new ProductEntity()
+// let staticProperties = Object.getOwnPropertyNames(ProductEntity.prototype)
+//                             .filter(prop => typeof productEntity[prop] === "function" && prop !== "constructor")
+//                             .map(prop => productEntity[prop].bind(productEntity))
+// console.log('staticProperties',staticProperties)
+// Entity.addWatcher(staticProperties)
+
+// staticProperties.forEach(prop => console.log(prop))
+
 
 export default new ProductEntity()
