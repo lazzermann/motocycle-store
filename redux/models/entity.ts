@@ -1,6 +1,6 @@
 import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
-import {put, call} from 'redux-saga/effects'
+import {put, fork, call, take} from 'redux-saga/effects'
 import {action} from './actions'
 import { SagaAction } from 'server/common';
 
@@ -35,15 +35,22 @@ export class Entity {
 
         instanceOnly.forEach((functionName, i) => { 
             this[functionName] = this[functionName].bind(this);
-            Entity.addWatcher([this[functionName]]);
-            console.log(functionName)
             
+            const func = this[functionName]
+
+            const sagaFunc = function * (){
+                while(true){
+                    const data = yield take(functionName.toUpperCase())
+                    delete(data.type)
+                    console.log(functionName.toUpperCase(),data)
+                    yield fork(func, data)
+                }
+            }
+
             Entity.actions[functionName] = {
-                saga : this[functionName],
+                saga : sagaFunc,
                 trigger : (data: any) => action(functionName.toUpperCase(), data)
             } 
-
-            console.log(Entity.actions)
         });
 
         

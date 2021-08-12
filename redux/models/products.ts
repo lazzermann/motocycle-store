@@ -18,22 +18,16 @@ export class ProductEntity extends Entity{
         super('product', {user : User, category : [Categories], reviews : [Reviews]})
     }
 
-    public * fetchProducts(){
-        while(true) {
-            console.log('FetchProducts')
-            const fetchedData = yield take('FetchProducts'.toUpperCase())
+    public * fetchProducts(data){
             yield call(this.xRead, 'product', true)
-        }
     }
 
 
-    public* watchFetchProductById(){
-        while(true){
-            console.log('watchFetchProductById')
-            const fetchedProduct = yield take(FETCH_PRODUCT_BY_ID)
-            yield call(this.xRead, `product/${fetchedProduct.id}`, false)
-            yield call(this.xRead, `product/similar/${fetchedProduct.id}`, true)
-        }
+    public* fetchProductById(data){
+            const {productId} = data
+            console.log('productId', productId) 
+            yield call(this.xRead, `product/${productId}`, false)
+            yield call(this.xRead, `product/similar/${productId}`, true)
     }
 }
 

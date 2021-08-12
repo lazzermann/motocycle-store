@@ -2,6 +2,7 @@ import React from "react"
 import Router, { withRouter, NextRouter } from 'next/router'
 import Layout from '../../components/Layout'
 import { xRead } from '../../module'
+import {Entity} from '../../redux/models/entity'
 import ProductModel from '../../src/Product'
 import Review from '../../components/Review'
 import { connect } from 'react-redux'
@@ -17,7 +18,7 @@ interface WithRouterProps {
     users: Map<string, any>,
     similarProducts: List<any>,
     reduxReviews: Map<string, any>,
-    fetchProductById: (id: string | string[]) => void;
+    fetchProductById: (data : any) => void;
 }
 
 interface IStates {
@@ -40,20 +41,15 @@ class Product extends React.Component<WithRouterProps, IStates>{
 
 
     componentDidMount() {
-        // console.log('[ID] DID MOUNT')
-
         const { fetchProductById } = this.props
-        fetchProductById(this.props.router.query.id)
-        console.log('fetchProductById')
+        fetchProductById({productId : this.props.router.query.id})
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('STATE DID UPDATE', this.state.productId)
-
         if (prevState.productId !== this.props.router.query.id) {
             this.setState({productId : this.props.router.query.id})
             const { fetchProductById } = this.props
-            fetchProductById(this.props.router.query.id)
+            fetchProductById({productId : this.props.router.query.id})
         }
     }
 
@@ -216,5 +212,5 @@ const mapStateToProps = (state, props) => {
     };
 };
 
-const idPage = connect(mapStateToProps, { fetchProductById })(Product);
+const idPage = connect(mapStateToProps, Entity.getTriggers())(Product);
 export default withRouter(idPage)
