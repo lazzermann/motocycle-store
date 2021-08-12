@@ -19,6 +19,14 @@ export interface SagaAction{
     trigger : (data : any) => void
 }
 
+export interface ISagaAction {
+    [entity: string]: {
+        [action: string]: {
+            saga?: () => void;
+            trigger: (data: any) => void;
+        },
+    };
+}
 
 export const IGNORS = [
     '/favicon.ico',

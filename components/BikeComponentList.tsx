@@ -3,12 +3,13 @@ import React from "react"
 import BikeComponent from './BikeComponent'
 import Product from '../src/Product' 
 import { connect } from 'react-redux'
-import {fetchProducts} from '../redux/models/products'
+import ProductEntity  from '../redux/models/products'
 import {xRead} from '../module'
 import {Entity} from '../redux/models/entity'
 import {isEmpty} from '../src/common'
 import { Reviews } from "src/Review"
 import {Map, List} from 'immutable'
+import saga from "redux/decorators/saga"
 
 interface IProps{
     fetchProducts: (data: any) => void;
@@ -17,9 +18,11 @@ interface IState{
     items: Array<Product>
 }
 
+@saga(ProductEntity)
 export class BikeComponentList extends React.Component<IProps, IState>{
 
     constructor(props){
+        
         super(props)
 
         this.state = {
@@ -29,9 +32,6 @@ export class BikeComponentList extends React.Component<IProps, IState>{
     
     componentDidMount(){
         const {fetchProducts} = this.props
-        console.log('1',Entity.getTriggers())
-        console.log('2',fetchProducts)
-        
         fetchProducts({})
     }
 
@@ -65,4 +65,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, Entity.getTriggers())(BikeComponentList);
+export default connect(mapStateToProps, ProductEntity.getTriggers())(BikeComponentList);

@@ -1,9 +1,11 @@
 import dynamic from "next/dynamic"
 import React from "react"
+import { connect } from 'react-redux'
+import {Entity} from '../redux/models/entity'
 import {xSave} from '../module'
 import Router from 'next/router'
 interface IProps{
-
+    saveUser: (data: any) => void
 }
 interface IState{
     firstName : string,
@@ -13,7 +15,7 @@ interface IState{
     confirmPassword : string
 }
 
-export default class SignUpForm extends React.Component<IProps, IState>{
+export  class SignUpForm extends React.Component<IProps, IState>{
     constructor(props){
         super(props)
 
@@ -41,38 +43,18 @@ export default class SignUpForm extends React.Component<IProps, IState>{
 
     handleSubmitChange(e){
         e.preventDefault()
-
-        // if(this.state.confirmPassword !== this.state.password){
-        //     alert('Password don`t match')
-        //     return
-        // }
+        console.log(this.props, this.props.saveUser)
         
-        // const opts = {
-        //     method : 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(this.state)
-        // }
-        
-        // const response = fetch('/auth/signup', opts)
-        
-        // response.then((data) => {
-        //     data.json()
-        //     .then((data) => console.log(data))
-        //     .catch((err) => console.log('Json' + ' ' + err)
-        //     )
+        const {saveUser} = this.props
+        saveUser(this.state)
+        // const data = xSave('/auth/signup', this.state).then((res) =>{
+        //     console.log(res.json)
+        //     return res.json
         // })
-        // .catch((err) => console.log(err))
 
-        const data = xSave('/auth/signup', this.state).then((res) =>{
-            console.log(res.json)
-            return res.json
-        })
-
-        Router.push({
-            pathname: '/'
-        })
+        // Router.push({
+        //     pathname: '/'
+        // })
     }
     
     render(){
@@ -112,3 +94,9 @@ export default class SignUpForm extends React.Component<IProps, IState>{
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {}
+};
+
+export default connect(mapStateToProps, Entity.getTriggers())(SignUpForm);

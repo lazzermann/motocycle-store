@@ -5,8 +5,11 @@ import BikeComponentList from '../components/BikeComponentList'
 import Layout from '../components/Layout'
 import React from 'react' 
 
+export interface IHomeProps {
+}
 
-export default function Home() {
+export default class Home extends React.PureComponent<IHomeProps> {
+  render(){
   return (
     <Layout>
       <section className="mt-8 px-4">
@@ -45,4 +48,5 @@ export default function Home() {
       </section>
     </Layout>
   )
+  }
 }

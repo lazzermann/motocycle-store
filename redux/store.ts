@@ -19,8 +19,11 @@ declare global {
 }
 
 const rootSaga = function* root() {
+    const sagaList = Entity.getSagas()
+    console.log(sagaList, 'saga')
+    
     yield all(
-        Entity.getSagas()
+        sagaList
     );
 };
 

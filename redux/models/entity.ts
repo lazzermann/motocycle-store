@@ -2,7 +2,7 @@ import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
 import {put, fork, call, take} from 'redux-saga/effects'
 import {action} from './actions'
-import { SagaAction } from 'server/common';
+import { ISagaAction, SagaAction } from 'server/common';
 
 export enum HTTP_METHOD{
     GET = 'GET',
@@ -19,7 +19,7 @@ export class Entity {
     protected schema
 
     private static watchers: Function[] = [];
-    private static actions: {[key: string] : SagaAction} = {}
+    public static actions: ISagaAction = {}
 
     constructor(schemaName, schemaStructure){
         this.schemaName = schemaName
@@ -30,28 +30,29 @@ export class Entity {
             idAttribute : '_id'
         })
 
-        const instanceOnly = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-        .filter(prop => prop != "constructor")
+        // const instanceOnly = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
+        // .filter(prop => prop != "constructor")
 
-        instanceOnly.forEach((functionName, i) => { 
-            this[functionName] = this[functionName].bind(this);
+        // instanceOnly.forEach((functionName, i) => { 
+        //     this[functionName] = this[functionName].bind(this);
+        //     console.log(functionName);
             
-            const func = this[functionName]
+        //     const func = this[functionName]
 
-            const sagaFunc = function * (){
-                while(true){
-                    const data = yield take(functionName.toUpperCase())
-                    delete(data.type)
-                    console.log(functionName.toUpperCase(),data)
-                    yield fork(func, data)
-                }
-            }
+        //     const sagaFunc = function * (){
+        //         while(true){
+        //             const data = yield take(functionName.toUpperCase())
+        //             delete(data.type)
+        //             console.log(functionName.toUpperCase(),data)
+        //             yield fork(func, data)
+        //         }
+        //     }
 
-            Entity.actions[functionName] = {
-                saga : sagaFunc,
-                trigger : (data: any) => action(functionName.toUpperCase(), data)
-            } 
-        });
+        //     Entity.actions[functionName] = {
+        //         saga : sagaFunc,
+        //         trigger : (data: any) => action(functionName.toUpperCase(), data)
+        //     } 
+        // });
 
         
         
@@ -63,17 +64,30 @@ export class Entity {
     }
 
     public static getSagas(){
-        return Object
-                .keys(Entity.actions)
-                .map(key => Entity.actions[key].saga())
-    }
-
-    public static getTriggers(){
-        const list = {}
+        const list = [];
         Object
             .keys(Entity.actions)
-            .map(key => list[key] = Entity.actions[key].trigger)
-        return list
+            .map(entity => 
+                Object.keys(Entity.actions[entity])
+                .filter(method => typeof Entity.actions[entity][method].saga == 'function')
+                .map(method => 
+                    list.push(Entity.actions[entity][method].saga())
+                    
+                )
+            )
+        return list;
+    }
+
+    public getTriggers(){
+        const list = {};
+        const entityName = this.constructor.name;
+        if (entityName in Entity.actions) {
+            const methods = Entity.actions[entityName];
+            Object.keys(methods).map(method => {
+                list[method] =Entity.actions[entityName][method].trigger;
+            })
+        }
+        return list;
     }
 
     public static getWatchers(){
