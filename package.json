@@ -25,7 +25,7 @@
     "lodash": "^4.17.21",
     "migrate-mongo": "^8.2.2",
     "mongoose": "^5.12.12",
-    "next": "latest",
+    "next": "^10.2.2",
     "next-redux-wrapper": "^7.0.0",
     "normalizr": "^3.6.1",
     "parse-json": "^5.2.0",

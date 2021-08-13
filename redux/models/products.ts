@@ -33,6 +33,12 @@ export class ProductEntity extends Entity{
             yield call(this.xRead, `product/${productId}`, false)
             yield call(this.xRead, `product/similar/${productId}`, true)
     }
+
+    @act()
+    public* fetchBySearch(data){
+            const {searchName} = data
+            yield call(this.xRead, `product/search/${searchName}`, true)
+    }
 }
 const productEntity = new ProductEntity()
 export default productEntity

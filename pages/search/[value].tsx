@@ -1,30 +1,32 @@
-import {xRead} from '../../module'
-import ProductModel from '../../src/Product'
 import BikeComponentList from '../../components/BikeComponentList'
 import Layout from '../../components/Layout'
 import React from "react"
-
+import saga from "redux/decorators/saga"
+import { connect } from 'react-redux'
+import { withRouter, NextRouter } from 'next/router'
+import ProductEntity from "redux/models/products"
+import { isEmpty } from 'src/common'
+import { route } from 'awilix-router-core'
 interface Props {
-    items: ProductModel[]
+    fetchBySearch: (data : any) => void
+    router: NextRouter
 }
 
 interface States{
-    items : ProductModel[]
 }
-
+@saga(ProductEntity)
 class SearchPage extends React.Component<Props, States>{
     constructor(props){
         super(props)
-        this.state = {
-            items : this.props.items
-        }
     }
 
-    static async getInitialProps(ctx) {
-        console.log('Context : ' + ctx.query.value)
-        const res = await xRead(`/product/search/${ctx.query.value}`)
-        console.log(res.data)
-        return { items: res.data}
+    // componentDidMount(){
+    //     const { fetchBySearch } = this.props
+    //     fetchProductById({productId : this.props.router.query.id})
+    // }
+
+    componentDidUpdate(){
+
     }
 
     render(){
@@ -38,4 +40,16 @@ class SearchPage extends React.Component<Props, States>{
     }
 }
 
-export default SearchPage
+const mapStateToProps = (state, props) =>{
+    const {entities} = state
+    const {router} = props
+
+    const product = !isEmpty(entities) && entities.getIn('product')
+    if(product){
+        const reviews = entities.get('reviews')
+
+    }
+}
+
+const searchPage = connect(mapStateToProps, ProductEntity.getTriggers())(SearchPage)
+export default withRouter(searchPage)
