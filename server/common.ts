@@ -4,14 +4,24 @@ export enum UserRole{
     guest = 'guest'
 }
 
-export interface Identity {
-    userId: any
-    firstName: string
-    lastName: string
-    email: string
-    token?: string
-    role: UserRole
-    image: string
+// export interface Identity {
+//     userId: any
+//     firstName: string
+//     lastName: string
+//     email: string
+//     token?: string
+//     role: UserRole
+//     
+// }
+
+export interface IIdentity {
+    id: any;
+    firstName: string,
+    lastName: string,
+    email: string;
+    token?: string;
+    image: string,
+    role: UserRole;
 }
 
 export interface SagaAction{

@@ -1,17 +1,20 @@
-import dynamic from "next/dynamic"
 import React from "react"
 import Link from 'next/link'
-import Router  from 'next/router'
-import { xSave } from '../module' 
-interface WithRouterProps{
-    // router : NextRouter
+import { connect } from 'react-redux'
+import UserEntity from 'redux/models/users'
+import saga from 'redux/decorators/saga'
+
+interface IProps{
+    loginUser: (data: any) => void
 }
+
+
 interface IState{
     email : string,
     password : string
 }
-
-export default class LoginForm extends React.Component<WithRouterProps, IState>{
+@saga(UserEntity)
+export class LoginForm extends React.Component<IProps, IState>{
     constructor(props){
         super(props)
 
@@ -35,35 +38,11 @@ export default class LoginForm extends React.Component<WithRouterProps, IState>{
     }
 
     handleSubmitChange(e){
+        console.log(UserEntity, this.props)
+        
+        const{loginUser} = this.props
         e.preventDefault()
-        
-        // const opts = {
-        //     method : 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(this.state)
-        // }
-        
-        // const response = fetch('/auth/login', opts)
-        
-        // response.then((data) => {
-        //     data.json()
-        //     .then((data) => console.log(data))
-        //     .catch((err) => console.log('Json' + ' ' + err)
-        //     )
-        // })
-        // .catch((err) => console.log(err))
-
-        const data = xSave('/auth/login', this.state).then((res) =>{
-            console.log(res.json)
-            console.log(document.cookie)
-            return res.json
-        })
-
-        Router.push({
-            pathname : '/'
-        })
+        loginUser(this.state)
     }
     
     render(){
@@ -107,3 +86,8 @@ export default class LoginForm extends React.Component<WithRouterProps, IState>{
     }
 }
 
+const mapStateToProps = (state) => {
+    return {}
+};
+
+export default connect(mapStateToProps, UserEntity.getTriggers())(LoginForm);

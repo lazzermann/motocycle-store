@@ -1,10 +1,6 @@
-import dynamic from "next/dynamic"
 import React from "react"
 import { connect } from 'react-redux'
-import {Entity} from '../redux/models/entity'
 import UserEntity from '../redux/models/users'
-import {xSave} from '../module'
-import Router from 'next/router'
 import saga from "redux/decorators/saga"
 interface IProps{
     saveUser: (data: any) => void
@@ -47,15 +43,6 @@ export  class SignUpForm extends React.Component<IProps, IState>{
         const {saveUser} = this.props
         e.preventDefault()
         saveUser(this.state)
-        // const data = xSave('/auth/signup', this.state).then((res) =>{
-        //     console.log(res.json)
-        //     return res.json
-        // })
-
-        // Router.push({
-        //     pathname: '/'
-        // })
-        
     }
     
     render(){

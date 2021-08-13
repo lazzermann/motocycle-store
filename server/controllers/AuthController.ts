@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import {route, GET, POST, PUT, DELETE, before} from 'awilix-express'
-import {Identity} from '../common'
+import {IIdentity} from '../common'
 import BaseContext from '../BaseContext'
 import statusCode from '../../http-status'
 
@@ -28,19 +28,18 @@ public register(req: Request, res: Response, next: NextFunction) {
 @POST()
 @route('/login')
 public login(req: Request, res: Response, next: NextFunction){
-    const JST_EXPIRE = 3
-    const REMEMBER_ME_EXPIRE = 30
-    return this.di.passport.authenticate('local-login', (err, identity: Identity) => {
-        if (err) {
-            return res.answer(null, err, statusCode.BAD_REQUEST);
-        }
-        let expire = JST_EXPIRE;
-        if (req.body.rememberMe) {
-            expire = REMEMBER_ME_EXPIRE;
-        }
-        res.cookie('token', identity.token, { maxAge: 1000 * 60 * 60 * 24 * expire });
-        return res.answer(identity);
-    })(req, res, next);
+    const { passport } = this.di;
+        const JST_EXPIRE = 3;
+        const REMEMBER_ME_EXPIRE = 30;
+
+        return passport.authenticate('local-login', (err, identity: IIdentity) => {
+            if (err) {
+                return res.answer(null, err, statusCode.BAD_REQUEST);
+            }
+
+            res.cookie('token', identity.token, { maxAge: 1000606024 });
+            return res.answer(identity);
+        })(req, res, next);
 }
 
 }

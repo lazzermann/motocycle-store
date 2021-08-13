@@ -4,9 +4,7 @@ import {User} from '../../src/User'
 import action from '../decorators/action'
 
 export class UserEntity extends Entity{
-    constructor(){
-        console.log('UserEntity')
-        
+    constructor(){        
         super('user', {})
     }
 
@@ -14,6 +12,12 @@ export class UserEntity extends Entity{
     public* saveUser(data){
         console.log('user',data)
         yield call(this.xSave, `auth/signup`, false, data)
+    }
+
+    @action()
+    public* loginUser(data){
+        console.log('login user', data)
+        yield call(this.xSave, `auth/login`, false, data)
     }
 }
 

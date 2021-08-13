@@ -2,7 +2,6 @@ import dynamic from "next/dynamic"
 import React from "react"
 import LoginForm from '../components/LoginForm'
 import AuthLayout from '../components/AuthLayout'
-const Footer = dynamic(()=> import('../components/Footer'))
 
 export default function Login(){
     return(

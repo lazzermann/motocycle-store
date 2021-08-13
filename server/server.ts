@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express'
 import config from '../config'
 import statusCode from '../http-status'
 import cookieSession from 'cookie-session'
-import {Identity, UserRole, IGNORS} from './common'
+import {IIdentity, UserRole, IGNORS} from './common'
 import BaseContext from './BaseContext'
 import Container, {passportFunc} from './container'
 import passport, {PassportStatic} from 'passport'
@@ -142,9 +142,9 @@ const acl = (req: Request, res: Response, next: NextFunction) => {
   //console.log(useAcl)
   
   if(useAcl){
-    passport.authenticate('jwt', (err, identity: Identity) => {
+    passport.authenticate('jwt', (err, identity: IIdentity) => {
         console.log('passport.authenticate : ')
-        const isLogged = identity && identity.userId && identity.role !== UserRole.guest
+        const isLogged = identity && identity.id && identity.role !== UserRole.guest
         
         if (!isLogged) {
               //identity = clearIdentity()

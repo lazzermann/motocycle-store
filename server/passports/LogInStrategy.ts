@@ -4,7 +4,7 @@ import { IContextContainer } from '../container'
 import { Request, Response } from 'express'
 import {asClass, asValue} from 'awilix'
 import bcrypt from 'bcrypt'
-import {Identity, UserRole} from '../common'
+import {IIdentity, UserRole} from '../common'
 import BaseContext from '../BaseContext'
 import jwt from 'jsonwebtoken'
 import config from '../../config'
@@ -45,8 +45,8 @@ export default class LogInStrategy extends BaseContext {
         if(encryptedPass){
             const token = jwt.sign(user.toJSON(), config.jwtSecret)
 
-            const identity : Identity ={
-                userId : user._id,
+            const identity : IIdentity ={
+                id : user._id,
                 firstName : user.firstName,
                 lastName : user.lastName,
                 email : user.email,
