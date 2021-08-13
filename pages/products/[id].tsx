@@ -5,11 +5,14 @@ import { xRead } from '../../module'
 import {Entity} from '../../redux/models/entity'
 import ProductModel from '../../src/Product'
 import Review from '../../components/Review'
+import ProductEntity  from '../../redux/models/products'
 import { connect } from 'react-redux'
 import { fetchProductById } from '../../redux/models/products'
 import { isEmpty } from '../../src/common'
 import { List, Map } from 'immutable'
 import BikeComponent from "../../components/BikeComponent"
+import saga from "redux/decorators/saga"
+``
 interface WithRouterProps {
     router: NextRouter,
     product: Map<string, any>,
@@ -24,7 +27,7 @@ interface WithRouterProps {
 interface IStates {
     productId: string | string[]
 }
-
+@saga(ProductEntity)
 class Product extends React.Component<WithRouterProps, IStates>{
     constructor(props) {
         super(props)
@@ -212,5 +215,5 @@ const mapStateToProps = (state, props) => {
     };
 };
 
-const idPage = connect(mapStateToProps, Entity.getTriggers())(Product);
+const idPage = connect(mapStateToProps, ProductEntity.getTriggers())(Product);
 export default withRouter(idPage)

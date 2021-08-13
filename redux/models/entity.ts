@@ -125,31 +125,26 @@ export class Entity {
 
         let normalizedData;
         
-        // yield fetch(fullUrl, params)
-        //     .then((response) => {
-        //         return response.json().then((json) => ({ json, response }));
-        //     })
-
-        //     .then(({ json, response }) => {
-        //         normalizedData = normalize(json.data, isNormalizeMany ? [this.schema] : this.schema);
-        //         console.log('normalized: ', normalizedData);                
-        //     });
 
         return fetch(fullUrl, params)
         .then((response) => {
             return response.json().then((json) => ({ json, response }));
-        }).then(({ json, response }) =>
-            Promise.resolve({
+        }).then(({ json, response }) => {
+            console.log('json response', json)
+            
+            return Promise.resolve({
                 success: response.ok ? true : false,
                 response: json
             })
+        }
         );
 
-        // yield put(func(normalizedData));   
+        
     }
 
     public * actionRequest (endpoint: string, isNormalizeMany : boolean, method: HTTP_METHOD, data: any, token?: string) {
-
+        console.log('data from sign up', data)
+        
         const { response } = yield call(this.xFetch, endpoint, method, data);
 
         const normalizedData = normalize(response.data, isNormalizeMany? [this.schema] : this.schema);
@@ -163,52 +158,8 @@ export class Entity {
     }
 
 
-    public * xSave(uri: string, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
+    public xSave(uri: string, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
+        console.log('xSave', uri, data)
         return this.actionRequest(uri, isNormalizeMany, method, data);
     }
 }
-
-
-// // , token?:string
-// function xFetch(endpoint: string, method: HTTP_METHOD, data : any){
-//     let url = nextConfig.public.BASE_URL + endpoint
-
-//     const params: any = {
-//         method,
-//         credentials: 'include',
-//         headers:{
-//             // Authorization: 'bearer ' + token, // get token from cookies
-//         },
-//     }
-
-//     if(method !== HTTP_METHOD.GET){
-//         params['headers']['content-type'] = 'application/json'
-//         params['body'] = JSON.stringify(data)
-//     }
-//     else{
-//         const opts = Object.entries(data).map(([key, val]) => key + '=' + val).join('&');
-//         url += (opts.length > 0?'?' + opts:'');
-//     }
-
-//     return fetch(url, params)
-//         .then((res) =>{
-//             return res.json().then((json) =>{
-//                 return {json, res}
-//             })
-//         })
-//         .then(({ json, res }) => json );
-// }
-
-
-// export function xSave(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
-//     return xFetch(uri, HTTP_METHOD.POST, data)
-// }
-
-
-// export function xRead(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.GET){
-//     return xFetch(uri, HTTP_METHOD.GET, data)
-// }
-
-// export function xDelete(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.DELETE){
-
-// }   

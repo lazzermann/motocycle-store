@@ -11,28 +11,34 @@ import jwt from 'jsonwebtoken'
 import config from '../../config'
 
 export default class JwtStrategy extends BaseContext {
-    private StrategyUser : passportLocal.Strategy
-    private request : Request
+    private strategyUser: passportLocal.Strategy;
+    private request: Request;
 
-constructor(opts: IContextContainer) {
+    get strategy() {
+        return this.strategyUser;
+    }
+
+    constructor(opts: IContextContainer) {
         super(opts);
         console.log('jwt: initialization JWT strategy');
 
         this.verifyRequest = this.verifyRequest.bind(this);
         this.getJwtFromRequest = this.getJwtFromRequest.bind(this);
 
-        this.StrategyUser = new Strategy({
+        this.strategyUser = new Strategy({
             jwtFromRequest: this.getJwtFromRequest,
-            secretOrKey   : config.jwtSecret,
-        }, this.verifyRequest);
+            secretOrKey: config.jwtSecret,
+        }, this.getJwtFromRequest);
     }
 
-public async verifyRequest(jwtPayload: any, done: VerifiedCallback) {
-}
+    public async verifyRequest(jwtPayload: any, done: VerifiedCallback) {
+        console.log('jwt: verifyRequest');
+    }
 
- public getJwtFromRequest(req: Request) {
+    public getJwtFromRequest(req: Request) {
+        console.log('jwt: get jwt from request');
         this.request = req;
         const getToken = ExtractJwt.fromAuthHeaderAsBearerToken();
-        return  getToken(req) || req.cookies['token'] || null;
+        return getToken(req) || req.cookies['token'] || null;
     }
 }

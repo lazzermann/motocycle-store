@@ -27,52 +27,34 @@ export default class SignUpStrategy extends BaseContext {
     }
 
     public async verifyRequestUser(req: Request, email: string, password: string, done: any) {
-        console.log('verifyRequestUser')
-        const {UserModel} = this.di;
-        const u = await UserModel.findOne({ 'email': email });
-        if (u) {
+        const { UserModel } = this.di;
+        const user = await UserModel.findOne({ email: email });
+        if (user) {
             return done({ email: 'That e-mail already taken!' });
         }
-        
-        const { firstName,  lastName } = req.body;
-        
-        let isRole: string = UserRole.user
-        
+
+        const { firstName, lastName, image } = req.body;
+
         const userData = {
-            firstName: firstName,
-            lastName: lastName,
             email: email && email.trim().toLowerCase(),
+            firstName: firstName && firstName.trim(),
+            lastName: lastName && lastName.trim(),
             password: password && password.trim(),
+            role: "user",
             image: 'https://robohash.org/lol' + lastName.split('').reverse().join('') + firstName.split('').reverse().join(''),
-            role: isRole,
         };
-        console.log('take data from body' + userData.firstName + ' ' + userData.lastName)
-        console.log(userData.email)
-        console.log(userData.password)
-        console.log(userData.role)
-        
-        
-        
 
         const newUser = new UserModel(userData);
-        //const error = UserModel.validate(newUser)
-        // console.log(error)
-        
-        // if (error) {
-        //     return done(error);
-        // }
 
         newUser.save().then((user: any) => {
-            
             return done(null, {
                 _id: user._id
-            
             });
         })
-            .catch((error: any) => {
-                console.log('verifyRequestUser__catch__error', error)
-                return done(error.errmsg);
-            });
+        .catch((error: any) => {
+            console.log('verifyRequestUser__catch__error', error)
+            return done(error.errmsg);
+        });
     }
 
 }

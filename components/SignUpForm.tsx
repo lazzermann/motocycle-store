@@ -2,8 +2,10 @@ import dynamic from "next/dynamic"
 import React from "react"
 import { connect } from 'react-redux'
 import {Entity} from '../redux/models/entity'
+import UserEntity from '../redux/models/users'
 import {xSave} from '../module'
 import Router from 'next/router'
+import saga from "redux/decorators/saga"
 interface IProps{
     saveUser: (data: any) => void
 }
@@ -14,7 +16,7 @@ interface IState{
     password : string,
     confirmPassword : string
 }
-
+@saga(UserEntity)
 export  class SignUpForm extends React.Component<IProps, IState>{
     constructor(props){
         super(props)
@@ -42,10 +44,8 @@ export  class SignUpForm extends React.Component<IProps, IState>{
     }
 
     handleSubmitChange(e){
-        e.preventDefault()
-        console.log(this.props, this.props.saveUser)
-        
         const {saveUser} = this.props
+        e.preventDefault()
         saveUser(this.state)
         // const data = xSave('/auth/signup', this.state).then((res) =>{
         //     console.log(res.json)
@@ -55,6 +55,7 @@ export  class SignUpForm extends React.Component<IProps, IState>{
         // Router.push({
         //     pathname: '/'
         // })
+        
     }
     
     render(){
@@ -99,4 +100,4 @@ const mapStateToProps = (state) => {
     return {}
 };
 
-export default connect(mapStateToProps, Entity.getTriggers())(SignUpForm);
+export default connect(mapStateToProps, UserEntity.getTriggers())(SignUpForm);

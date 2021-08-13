@@ -10,7 +10,7 @@ const saga = (entity: Entity = null) => (constructor: Function = null) =>{
             const sagaFunc = function * () {
                 while (true) {
                     const data = yield take(method.toUpperCase());
-                    delete(data.type);
+                    // delete(data.type);
                     yield fork(func, data);
                 }
             };

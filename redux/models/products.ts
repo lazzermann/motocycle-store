@@ -1,10 +1,10 @@
 import {action} from './actions'
-import {take, call } from 'redux-saga/effects'
+import {call } from 'redux-saga/effects'
 import  {Reviews} from '../../src/Review';
 import  {User}  from '../../src/User'
 import  {Categories} from '../../src/Category'
 import {Entity} from './entity'
-import Action from '../decorators/action'
+import act from '../decorators/action'
 
 export const FETCH_PRODUCTS  = 'FETCH_PRODUCTS'
 export const REQUEST_PRODUCTS = 'REQUEST_PRODUCTS'
@@ -22,12 +22,12 @@ export class ProductEntity extends Entity{
         super('product', {user : User, category : [Categories], reviews : [Reviews]})
     }
 
-    @Action()
+    @act()
     public * fetchProducts(data){
             yield call(this.xRead, 'product', true)
     }
 
-    @Action()
+    @act()
     public* fetchProductById(data){
             const {productId} = data
             yield call(this.xRead, `product/${productId}`, false)
