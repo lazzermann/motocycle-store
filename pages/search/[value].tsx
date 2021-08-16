@@ -7,6 +7,8 @@ import { withRouter, NextRouter } from 'next/router'
 import ProductEntity from "redux/models/products"
 import { isEmpty } from 'src/common'
 import { route } from 'awilix-router-core'
+import wrapper from '../../redux/store';
+
 interface Props {
     fetchBySearch: (data : any) => void
     router: NextRouter
@@ -24,6 +26,12 @@ class SearchPage extends React.Component<Props, States>{
     //     const { fetchBySearch } = this.props
     //     fetchProductById({productId : this.props.router.query.id})
     // }
+
+    public static getInitialProps = wrapper.getInitialAppProps(store => ({ query }) => {
+        console.log('Store', store)
+        
+        store.dispatch(ProductEntity.getTriggers().fetchBySearch({ searchName: query?.value }));
+    });
 
     componentDidUpdate(){
 
@@ -43,7 +51,8 @@ class SearchPage extends React.Component<Props, States>{
 const mapStateToProps = (state, props) =>{
     const {entities} = state
     const {router} = props
-
+    console.log('Search page entities', entities)
+    
     const product = !isEmpty(entities) && entities.getIn('product')
     if(product){
         const reviews = entities.get('reviews')

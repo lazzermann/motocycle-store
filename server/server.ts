@@ -47,6 +47,7 @@ app.prepare().then(() => {
     maxAge: 31 * 24 * 60 * 60 * 1000
   }))
   server.use(responses)
+  server.use(print)
   server.use(scopePerRequest(container));
 
   //(config.dev ? 'ts' : 'js')
@@ -112,6 +113,10 @@ export const errorResult = (res, error, message, status = 404) => {
   });
 }
 
+const print = (req: Request, res: Response, next: NextFunction) =>{
+ 
+  next()
+}
 
 const responses = (req: Request, res: Response, next: NextFunction) => {
   res.answer = (
@@ -125,14 +130,15 @@ const responses = (req: Request, res: Response, next: NextFunction) => {
             message
         });
     };
+
+    res.print = (
+      pathName: string,
+      ssrData: any
+    ) =>{
+      req.ssrData = ssrData
+      app.render(req, res, pathName, req.query);
+    } 
   
-  res.print = (
-    pathName: string,
-    ssrData: any
-  ) =>{
-    req.ssrData = ssrData
-    // this.nextApp.render(req, res, pathName, req.query);
-  } 
     next()
 }
 
