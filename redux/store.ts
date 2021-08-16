@@ -2,6 +2,7 @@ import createSagaMiddleware, { Task, END } from 'redux-saga'
 import { all } from 'redux-saga/effects'
 import nextConfig from 'next.config'
 import { createStore, applyMiddleware, compose, Store, AnyAction } from 'redux';
+import {serialize, deserialize} from 'json-immutable'
 import { createWrapper, MakeStore } from 'next-redux-wrapper';
 import next from 'next';
 import { AppState } from './reducer';
@@ -53,5 +54,15 @@ export const makeStore: MakeStore<AppState> = () => {
 };
 
 
-const wrapper = createWrapper<AppState>(makeStore);
+// const wrapper = createWrapper<AppState>(makeStore);
+const wrapper = createWrapper<AppState>(makeStore, { 
+    serializeState: state => {
+        return state === Object(state) ? serialize(state) : state;
+    },
+    deserializeState: state => {
+        return state === Object(state) ? state : deserialize(state);
+    }
+});
+
+
 export default wrapper;

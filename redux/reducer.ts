@@ -28,16 +28,16 @@ const nextReducer = (
 ) => {
     switch (action.type) {
         case HYDRATE:
-            if (action.payload.app === 'init') delete action.payload.app;
-            if (action.payload.page === 'init') delete action.payload.page;
-            return {...state, ...action.payload};
-            if (!state.isHydrate) {
+            // if (action.payload.app === 'init') delete action.payload.app;
+            // if (action.payload.page === 'init') delete action.payload.page;
+            if (action.payload.entities.size <= 0) {
                 return { ...state };
             }
+            return { ...state, ...action.payload };
         case 'APP':
-            return {...state, app: action.payload};
+            return { ...state, app: action.payload };
         case 'PAGE':
-            return {...state, page: action.payload};
+            return { ...state, page: action.payload };
         default:
             return state;
     }   
@@ -78,13 +78,13 @@ function entities(state = stateInit, action: any) {
     }
 }
 
-function isHydrate(state = true, action: any) {
-    switch (action.type) {
-    case HYDRATE_ACTION:
-        return action.value;
-    }
-    return state;
-}
+// function isHydrate(state = true, action: any) {
+//     switch (action.type) {
+//     case HYDRATE_ACTION:
+//         return action.value;
+//     }
+//     return state;
+// }
 
 // function users(state = [], action: any) {
 //     return state;
@@ -92,14 +92,13 @@ function isHydrate(state = true, action: any) {
 
 const appReducer = combineReducers({
     entities,
-    isHydrate
 });
 
-// function rootReducer(state, action) {
-//     const intermediateState = appReducer(state, action);
-//     const finalState = nextReducer(intermediateState, action);
-//     return finalState;
-// }
+function rootReducer(state, action) {
+    const intermediateState = appReducer(state, action);
+    const finalState = nextReducer(intermediateState, action);
+    return finalState;
+}
 
-// export default rootReducer; 
-export default appReducer
+export default rootReducer; 
+// export default appReducer

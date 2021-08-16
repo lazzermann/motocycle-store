@@ -21,6 +21,7 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -124,6 +125,14 @@ const responses = (req: Request, res: Response, next: NextFunction) => {
             message
         });
     };
+  
+  res.print = (
+    pathName: string,
+    ssrData: any
+  ) =>{
+    req.ssrData = ssrData
+    // this.nextApp.render(req, res, pathName, req.query);
+  } 
     next()
 }
 

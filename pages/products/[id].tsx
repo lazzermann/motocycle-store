@@ -8,6 +8,7 @@ import { isEmpty } from '../../src/common'
 import { List, Map } from 'immutable'
 import BikeComponent from "../../components/BikeComponent"
 import saga from "redux/decorators/saga"
+import wrapper from '../../redux/store';
 
 interface WithRouterProps {
     router: NextRouter,
@@ -38,11 +39,16 @@ class Product extends React.Component<WithRouterProps, IStates>{
     //     return await fetchProductById(ctx.query.id)
     // }
 
+    public static getInitialProps = wrapper.getInitialAppProps(store => ({ query }) => {
+        console.log('Store', store)
+        
+        store.dispatch(ProductEntity.getTriggers().fetchProductById({ productId: query?.id }));
+    });
 
-    componentDidMount() {
-        const { fetchProductById } = this.props
-        fetchProductById({productId : this.props.router.query.id})
-    }
+    // componentDidMount() {
+    //     const { fetchProductById } = this.props
+    //     fetchProductById({productId : this.props.router.query.id})
+    // }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.productId !== this.props.router.query.id) {
