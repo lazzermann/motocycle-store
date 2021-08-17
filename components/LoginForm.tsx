@@ -2,7 +2,9 @@ import React from "react"
 import Link from 'next/link'
 import { connect } from 'react-redux'
 import UserEntity from 'redux/models/users'
+import Identity from 'redux/models/identity'
 import saga from 'redux/decorators/saga'
+import { Router, useRouter } from "next/router"
 
 interface IProps{
     loginUser: (data: any) => void
@@ -13,7 +15,7 @@ interface IState{
     email : string,
     password : string
 }
-@saga(UserEntity)
+@saga(Identity)
 export class LoginForm extends React.Component<IProps, IState>{
     constructor(props){
         super(props)
@@ -90,4 +92,4 @@ const mapStateToProps = (state) => {
     return {}
 };
 
-export default connect(mapStateToProps, UserEntity.getTriggers())(LoginForm);
+export default connect(mapStateToProps, Identity.getTriggers())(LoginForm);

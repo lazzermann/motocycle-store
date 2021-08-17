@@ -1,8 +1,11 @@
 import nextConfig from '../../next.config'
 import { normalize, schema } from 'normalizr'
-import {put, fork, call, take} from 'redux-saga/effects'
-import {action} from './actions'
-import { ISagaAction, SagaAction } from 'server/common';
+import {put, fork, call, take, select} from 'redux-saga/effects'
+import {action, clearSSRData} from './actions'
+import { camelizeKeys } from 'humps';
+
+import { ISagaAction, SagaAction, } from 'server/common';
+import {isEmpty} from 'src/common'
 
 export enum HTTP_METHOD{
     GET = 'GET',
@@ -25,37 +28,12 @@ export class Entity {
         this.schemaName = schemaName
         this.schemaStructure = schemaStructure
         
-        this.schema = new schema.Entity(this.schemaName,
-            this.schemaStructure,{
-            idAttribute : '_id'
-        })
+        this.schema = new schema.Entity(schemaName, schemaStructure)
 
-        // const instanceOnly = Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-        // .filter(prop => prop != "constructor")
-
-        // instanceOnly.forEach((functionName, i) => { 
-        //     this[functionName] = this[functionName].bind(this);
-        //     console.log(functionName);
-            
-        //     const func = this[functionName]
-
-        //     const sagaFunc = function * (){
-        //         while(true){
-        //             const data = yield take(functionName.toUpperCase())
-        //             delete(data.type)
-        //             console.log(functionName.toUpperCase(),data)
-        //             yield fork(func, data)
-        //         }
-        //     }
-
-        //     Entity.actions[functionName] = {
-        //         saga : sagaFunc,
-        //         trigger : (data: any) => action(functionName.toUpperCase(), data)
-        //     } 
-        // });
-
-        
-        
+        // this.schema = new schema.Entity(this.schemaName,
+        //     this.schemaStructure,{
+        //     idAttribute : '_id'
+        // })
 
         this.xFetch = this.xFetch.bind(this)
         this.xRead = this.xRead.bind(this)
@@ -103,7 +81,7 @@ export class Entity {
     }
 
     public xFetch(endpoint: string, method: HTTP_METHOD, data : any){
-        console.log('HTTP_METHOD', method)
+        console.log('xFetch', endpoint, data)
         let fullUrl = nextConfig.public.BASE_URL + '/' + endpoint;
 
         const params: any = {
@@ -142,24 +120,39 @@ export class Entity {
         
     }
 
-    public * actionRequest (endpoint: string, isNormalizeMany : boolean, method: HTTP_METHOD, data: any, token?: string) {
-        console.log('data from sign up', data)
+    public * actionRequest (endpoint: string, method: HTTP_METHOD, data: any, token?: string) {
+        let query = yield select((state: any) => {
+            console.log('state.ssrReducer', state.ssrReducer)
         
-        const { response } = yield call(this.xFetch, endpoint, method, data);
-
-        const normalizedData = normalize(response.data, isNormalizeMany? [this.schema] : this.schema);
-        console.log('Normalized: ', normalizedData);   
+        return state.ssrReducer && state.ssrReducer[this.schemaName] })
         
-        yield put(requestResult(this.schemaName, normalizedData));  
-        return { ...response };
+            
+        console.log('actionRequest', endpoint)
+        if (query && !isEmpty(query)) {
+            yield put(clearSSRData({ name: this.schemaName }));
+        } 
+
+        const isServer = typeof window === 'undefined';
+        if (!isServer) {
+            const { response } = yield call(this.xFetch, endpoint, method, data);
+            query = response.data;
+        }
+
+        if (query) {
+            const schema = (Array.isArray(query) ? [this.schema] : this.schema);
+            const normalizedData = normalize(camelizeKeys(JSON.parse(JSON.stringify(query))), schema);
+            yield put(requestResult(this.schemaName, normalizedData));
+            return { ...query };
+        }
+        return null;
     }
-    public xRead(uri: string,  isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.GET){
-        return this.actionRequest(uri, isNormalizeMany, method, data);
+    public xRead(uri: string,  data: any = {}, method: HTTP_METHOD = HTTP_METHOD.GET){
+        return this.actionRequest(uri, method, data);
     }
 
 
-    public xSave(uri: string, isNormalizeMany : boolean, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
+    public xSave(uri: string, data: any = {}, method: HTTP_METHOD = HTTP_METHOD.POST){
         console.log('xSave', uri, data)
-        return this.actionRequest(uri, isNormalizeMany, method, data);
+        return this.actionRequest(uri, method, data);
     }
 }

@@ -39,13 +39,13 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
     
     if (this.props.reviews && this.props.reviews.length) {
       averageGradeByReviews =  this.props.reviews && this.props.reviews.reduce((acc, curr) => {
-        console.log('acc', acc)
-        return acc + curr.get('grade')
+        console.log('curr', curr)
+        return acc + (curr !== undefined) ? curr.get('grade') : 0
       }, 0) / this.props.reviews.length
     }
     
 
-    console.log('averageGradeByReviews',averageGradeByReviews)
+    console.log('this.props.product.get(id)',this.props.product.get('id'))
 
     for (let i = 1; i <= 5; i++) {
       if (i <= averageGradeByReviews) {
@@ -58,11 +58,11 @@ export default class BikeComponent extends React.Component<MyProps, MyState>{
 
     return (
       <div className="my-2 max-w-xs rounded-md bg-white flex-col sm:mx-10">
-        <Link href={`/products/${this.props.product.get('_id')}`}>
+        <Link href={`/products/${this.props.product.get('id')}`}>
           <img  className="rounded-t-md" width="400" height="150" src={this.props.product.get('image')} alt="" />
         </Link>
         <div className="">
-          <Link href={`/products/${this.props.product.get('_id')}`}>
+          <Link href={`/products/${this.props.product.get('id')}`}>
             <a className="pl-2 pb-1 font-semibold text-xl">{this.props.product.get('name')}</a>
           </Link>
           <h2 className="pl-2 font-medium text-xl">Price: {this.props.product.get('price')}$</h2>

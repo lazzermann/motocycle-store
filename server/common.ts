@@ -49,3 +49,17 @@ export const IGNORS = [
     '/styles.chunk.css.map',
     '/__nextjs',
 ]
+
+export enum ENTITIES {
+    USERS = 'users',
+    PRODUCTS = 'products',
+    REVIEWS = 'reviews',
+    CATEGORIES = 'categories'
+}
+
+export enum SCHEMA_ENTITIES{
+    USER = 'user',
+    PRODUCT = 'product',
+    REVIEW = 'reviews',
+    CATEGORY = 'category'
+}

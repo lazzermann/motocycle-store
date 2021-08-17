@@ -43,6 +43,8 @@ class Product extends React.Component<WithRouterProps, IStates>{
         console.log('Store', store)
         
         store.dispatch(ProductEntity.getTriggers().fetchProductById({ productId: query?.id }));
+        // store.dispatch(ProductEntity.getTriggers().fetchSimilarProductsById({ productId: query?.id }))
+        // store.dispatch(ProductEntity.getTriggers().({ productId: query?.id }));
     });
 
     // componentDidMount() {
@@ -50,20 +52,20 @@ class Product extends React.Component<WithRouterProps, IStates>{
     //     fetchProductById({productId : this.props.router.query.id})
     // }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.productId !== this.props.router.query.id) {
-            this.setState({productId : this.props.router.query.id})
-            const { fetchProductById } = this.props
-            fetchProductById({productId : this.props.router.query.id})
-        }
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     // if (prevState.productId !== this.props.router.query.id) {
+    //     //     this.setState({productId : this.props.router.query.id})
+    //     //     const { fetchProductById } = this.props
+    //     //     fetchProductById({productId : this.props.router.query.id})
+    //     // }
+    // }
 
     render() {
         const { product, reviews, categories, users, similarProducts, reduxReviews } = this.props;
         console.log('reviews', reviews)
         const reviewItems = reviews ? reviews.valueSeq().map(
             (item) => {
-                return <Review key={item.get('_id')} review={item} user={users && users.get(item.get('user'))} />
+                return <Review key={item.get('id')} review={item} user={users && users.get(item.get('user'))} />
             }
         ) : []
         const averageGradeByReviews = reviews ? reviews.reduce((acc, curr) => acc + curr.get('grade'), 0) / reviews.size : 0;
@@ -185,7 +187,7 @@ const mapStateToProps = (state, props) => {
         const pd = entities.get('product')
         similarProducts = pd
             .filter(prod => {
-                return (prod.get('price') - 200) > 0 && (prod.get('_id') !== product.get('_id')) ? (prod.get('price') > product.get('price') - 200 && prod.get('price') < product.get('price') + 250) : false
+                return (prod.get('price') - 200) > 0 && (prod.get('id') !== product.get('id')) ? (prod.get('price') > product.get('price') - 200 && prod.get('price') < product.get('price') + 250) : false
             })
         
 

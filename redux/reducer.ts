@@ -3,8 +3,8 @@ import { HYDRATE } from "next-redux-wrapper"
 import { AnyAction, combineReducers } from "redux"
 import {REQUEST_RESULT} from './models/entity'
 import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from './models/products'
-import {isEmpty} from '../src/common'
-
+import {isEmpty, UserRole} from '../src/common'
+import {SET_SSR_DATA, CLEAR_SSR_DATA, GET_IDENTITY, action} from '../redux/models/actions'
 export interface AppState {
     // entities:{
     //     user : any,
@@ -20,7 +20,9 @@ export interface AppState {
     // products: any,
 }
 
-const HYDRATE_ACTION = 'HYDRATE_ACTION'
+
+const stateInit = fromJS({})
+
 
 const nextReducer = (
     state: AppState,
@@ -43,19 +45,61 @@ const nextReducer = (
     }   
 };
 
-const stateInit = fromJS({})
+const queryInitialState: any = null;
+const ssrReducer = (state = queryInitialState, action: any) => {
+
+    switch (action.type) {
+    case SET_SSR_DATA: {
+        return { ...action.data };
+    }
+    case CLEAR_SSR_DATA: {
+        if (state && (action.name in state)) {
+            console.log('CLEAR SSR ');
+            state[action.name] = undefined;
+            return { ...state };
+        }
+        break;
+    }
+    default:
+        return state;
+    }
+};
+
+
+const intitIdentity = {
+    firstName : 'guest',
+    lastName : 'guest',
+    role : UserRole.guest
+}
+
+const identity = (state = intitIdentity, action: any) =>{
+    switch(action.type){
+        case GET_IDENTITY :{
+            console.log('GET_IDENTITY', action)
+            
+            if(action.user){
+                return{
+                    ...state,
+                    identity : {...action.user}
+                }
+            }
+
+            break;
+        }
+        
+        default:
+            return state
+        
+            
+    }
+}
+
 
 function entities(state = stateInit, action: any) {
     
     switch(action.type){
         case REQUEST_RESULT :{
-            const { data : {entities} } = action;
-            // if(entities){
-            //     const newData = fromJS(action.data.entities);
-            //     console.log(newData)
-            //     state = isEmpty(state) ? newData: state.mergeDeep(newData);
-            // }
-            
+            const { data : {entities} } = action;            
             if(entities){
                 Object.keys(entities).map((entityName) =>{
                     let list = state.get(entityName)
@@ -78,20 +122,10 @@ function entities(state = stateInit, action: any) {
     }
 }
 
-// function isHydrate(state = true, action: any) {
-//     switch (action.type) {
-//     case HYDRATE_ACTION:
-//         return action.value;
-//     }
-//     return state;
-// }
-
-// function users(state = [], action: any) {
-//     return state;
-// }
-
 const appReducer = combineReducers({
     entities,
+    ssrReducer,
+    identity
 });
 
 function rootReducer(state, action) {

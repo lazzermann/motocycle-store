@@ -4,7 +4,8 @@ import React from 'react'
 import { AppProps } from 'next/app';
 import wrapper, { SagaStore } from '../redux/store';
 import { END } from 'redux-saga';
-
+import { isEmpty } from '../src/common'
+import {setSSRData, getIdentity} from '../redux/models/actions'
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (<Component {...pageProps} />);
@@ -12,23 +13,29 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, ctx }) => {
 
-    //async ({ Component, ctx }: AppContext) => {
+    
     (store as SagaStore).runSaga();
 
+
+    if (ctx.req && ctx.req['ssrData'] !== undefined && !isEmpty(ctx.req['ssrData'])) {
+        store.dispatch(setSSRData({ data: ctx.req['ssrData']}));
+    }
+
+    if (ctx.req && ctx.req['identity'] !== undefined && !isEmpty(ctx.req['identity'])) {
+        store.dispatch(getIdentity({ user: ctx.req['identity']}));
+    }
+
     console.log('props', Component.getInitialProps)
-    // 1. Wait for all page actions to dispatch
     const pageProps = {
         ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
         namespacesRequired: ['common']
     };
 
-    // 2. Stop the saga if on server
     if (store && ctx.req) {
         store.dispatch(END);
         await (store as SagaStore).sagaTask.toPromise();
     }
 
-    // 3. Return props
     return {
         pageProps
     };
