@@ -4,7 +4,7 @@ import { AnyAction, combineReducers } from "redux"
 import {REQUEST_RESULT} from './models/entity'
 import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from './models/products'
 import {isEmpty, UserRole} from '../src/common'
-import {SET_SSR_DATA, CLEAR_SSR_DATA, GET_IDENTITY, action} from '../redux/models/actions'
+import {SET_SSR_DATA, CLEAR_SSR_DATA, GET_IDENTITY, UPDATE_IDENTITY, action} from '../redux/models/actions'
 export interface AppState {
     // entities:{
     //     user : any,
@@ -76,15 +76,23 @@ const identity = (state = intitIdentity, action: any) =>{
     switch(action.type){
         case GET_IDENTITY :{
             console.log('GET_IDENTITY', action)
-            
-            if(action.user){
+            delete(action.type)
+            if(action){
                 return{
                     ...state,
-                    identity : {...action.user}
+                    ...action 
                 }
             }
 
             break;
+        }
+        
+        case UPDATE_IDENTITY :{
+            return {
+                ...state
+            }
+
+            break
         }
         
         default:

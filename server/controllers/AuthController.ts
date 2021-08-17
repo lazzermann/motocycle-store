@@ -9,9 +9,7 @@ export default class AuthController extends BaseContext {
     
 @POST()
 @route('/signup')
-public register(req: Request, res: Response, next: NextFunction) {
-    console.log('Hello from UserEntity')
-    
+public register(req: Request, res: Response, next: NextFunction) {    
     return this.di.passport.authenticate('local-signup', (errors, identity) => {
         if (errors) {
             console.log('register__errors=', errors);

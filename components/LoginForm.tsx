@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import UserEntity from 'redux/models/users'
 import Identity from 'redux/models/identity'
 import saga from 'redux/decorators/saga'
-import { Router, useRouter } from "next/router"
+import Router, {useRouter } from "next/router"
 
 interface IProps{
     loginUser: (data: any) => void
@@ -45,6 +45,7 @@ export class LoginForm extends React.Component<IProps, IState>{
         const{loginUser} = this.props
         e.preventDefault()
         loginUser(this.state)
+        Router.push('/', '/', {shallow: true})
     }
     
     render(){

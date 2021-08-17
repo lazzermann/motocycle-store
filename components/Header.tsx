@@ -1,9 +1,26 @@
 import Link from 'next/link'
 import React,{useEffect, useState}  from 'react'
+// 
 
-export default function Header(){
-    const [isToggle, setIsToggle] = useState(false)
+interface IProps{
+  loginUser: (data: any) => void
+}
 
+
+interface IState{
+  isToggle : boolean
+}
+
+export class Header extends React.Component<IProps, IState>{
+  
+  constructor(props){
+    super(props)
+    this.state = {
+      isToggle : false
+    }
+  }
+  
+  render(){
     return(
         <header>
         <div className="flex justify-between px-2 py-2">
@@ -19,14 +36,14 @@ export default function Header(){
             </div>
 
             <div>
-              <button onClick={()=>{setIsToggle(!isToggle)}} type="button">
+              <button onClick={()=>{this.setState({isToggle : !this.state.isToggle})}} type="button">
                 <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 95.95"><path d="M8.94 0h105c4.92 0 8.94 4.02 8.94 8.94s-4.02 8.94-8.94 8.94h-105C4.02 17.88 0 13.86 0 8.94S4.02 0 8.94 0zm0 78.07h105c4.92 0 8.94 4.02 8.94 8.94s-4.02 8.94-8.94 8.94h-105C4.02 95.95 0 91.93 0 87.01s4.02-8.94 8.94-8.94zm0-39.04h105c4.92 0 8.94 4.02 8.94 8.94s-4.02 8.94-8.94 8.94h-105C4.02 56.91 0 52.89 0 47.97c0-4.91 4.02-8.94 8.94-8.94z"/></svg>
               </button>
             </div>
           </div>
         </div>
 
-        <nav className={`sm:fixed sm:h-full sm:z-10 sm:w-1/4 sm:inset-0 sm:bg-gray-100 ${isToggle ? 'block' : 'hidden'}`}>
+        <nav className={`sm:fixed sm:h-full sm:z-10 sm:w-1/4 sm:inset-0 sm:bg-gray-100 ${this.state.isToggle ? 'block' : 'hidden'}`}>
           <div className="block cursor-pointer">
             <div className="bg-white sm:bg-gray-100">
             
@@ -54,7 +71,7 @@ export default function Header(){
             <div className="bg-white sm:bg-gray-100">
             
             <div className="border-t sm:border-gray-300 transition ease-out duration-300  hover:bg-gray-300">
-               <Link href="/test">
+              <Link href="/test">
                 <div className="flex justify-between pr-4 pl-6 py-3">
                       <a className="flex justify-between" href="">
                         <span className="pl-1">Classic</span>
@@ -116,4 +133,5 @@ export default function Header(){
         <h1 className="pt-4 text-gray-700 text-center text-3xl sm:text-4xl">Best motorcycles !</h1>
       </header>
     )
+}
 }

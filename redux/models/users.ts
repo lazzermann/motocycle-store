@@ -12,10 +12,7 @@ export class UserEntity extends Entity{
     }
 
     @action()
-    public* saveUser(data){
-        console.log('user',data)
-        yield call(this.xSave, `auth/signup`, data)
-    }
+    
 
     @action()
     public* loginUser(data){

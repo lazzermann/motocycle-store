@@ -1,6 +1,7 @@
 import React from "react"
 import { connect } from 'react-redux'
-import UserEntity from '../redux/models/users'
+import Identity from '../redux/models/identity'
+import Router from 'next/router'
 import saga from "redux/decorators/saga"
 interface IProps{
     saveUser: (data: any) => void
@@ -12,7 +13,7 @@ interface IState{
     password : string,
     confirmPassword : string
 }
-@saga(UserEntity)
+@saga(Identity)
 export  class SignUpForm extends React.Component<IProps, IState>{
     constructor(props){
         super(props)
@@ -43,11 +44,12 @@ export  class SignUpForm extends React.Component<IProps, IState>{
         const {saveUser} = this.props
         e.preventDefault()
         saveUser(this.state)
+        // Router.push('/login', '/login', {shallow : true})
     }
     
     render(){
         return(     
-            <form onSubmit={this.handleSubmitChange} className="flex flex-col items-center w-full sm:w-435">
+            <form className="flex flex-col items-center w-full sm:w-435">
                     <div>
                         <div className="pt-7 w-full max-w-full sm:w-435">
                             <input name="firstName" value={this.state.firstName} onChange={this.handleInputChange} className="py-2 px-6 w-full rounded-md focus:outline-none bg-gray-100  text-gray-900 focus:bg-gray-200" placeholder="First name" type="text" />
@@ -74,7 +76,7 @@ export  class SignUpForm extends React.Component<IProps, IState>{
                     </div>
 
                     <div className="flex mt-7">
-                        <button type="submit" className="bg-red-600 px-6  text-white text-sm font-medium  py-3 rounded-md ">
+                        <button onClick={this.handleSubmitChange} className="bg-red-600 px-6  text-white text-sm font-medium  py-3 rounded-md ">
                             Sign Up
                         </button>
                     </div>
@@ -87,4 +89,4 @@ const mapStateToProps = (state) => {
     return {}
 };
 
-export default connect(mapStateToProps, UserEntity.getTriggers())(SignUpForm);
+export default connect(mapStateToProps, Identity.getTriggers())(SignUpForm);
