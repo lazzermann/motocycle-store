@@ -13,6 +13,15 @@ export default class RenderController extends BaseContext {
     @GET()
     @route('/')
     getHomePage(req: Request, res: Response){
+        const {ProductService} = this.di
+        return ProductService
+                .getTheMostExpensive()
+                .lean()
+                .then(product => {
+                    return res.print('/', {
+                        [SCHEMA_ENTITIES.PRODUCT] : product[0]
+                    })
+                })
         console.log('Home Page')
         
         return res.print('/')
