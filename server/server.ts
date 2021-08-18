@@ -6,13 +6,13 @@ import container, { IContextContainer } from './container'
 import { Request, Response, NextFunction } from 'express'
 import config from '../config'
 import statusCode from '../http-status'
+
+
 import cookieSession from 'cookie-session'
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
 import {IIdentity, UserRole, IGNORS} from './common'
-import BaseContext from './BaseContext'
-import Container, {passportFunc} from './container'
 import {PassportStatic} from 'passport'
 
 
@@ -43,20 +43,21 @@ app.prepare().then(() => {
   startDatabase()
   const server = express()
   
-  server.use(bodyParser.json({limit: '20mb'}))
-  server.use(bodyParser.urlencoded({extended : true}))
-  server.use(acl)
+  server.use(bodyParser.json({ limit: '10mb' }));
+  server.use(bodyParser.urlencoded({ extended: true }));
+  server.use(bodyParser.json())
   server.use(cookieSession({
     name: 'session',
     keys: [config.jwtSecret],
-    maxAge: 31 * 24 * 60 * 60 * 1000
-  }))
+    maxAge: 312460601000,
+  }));
   server.use(cookieParser());
   server.use(compression());
   server.use(passport.initialize());
   server.use(passport.session());
-  server.use(responses)
-  server.use(acl)
+  server.use(responses);
+  server.use(acl);
+
   server.use(scopePerRequest(container));
 
   //(config.dev ? 'ts' : 'js')
