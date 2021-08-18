@@ -1,7 +1,7 @@
 import { Entity } from './entity'
 import action from 'redux/decorators/action'
 import {UserRole} from 'server/common'
-import {getIdentity} from './actions'
+import {getIdentity, clearIdentity} from './actions'
 import {call, put} from 'redux-saga/effects'
 import { HTTP_METHOD } from 'redux/models/entity'
 export class Identity extends Entity {
@@ -30,6 +30,11 @@ export class Identity extends Entity {
                 // Router.push(href, href, { shallow: true });
             // }
         
+    }
+
+    @action()
+    public * logOutUser(data){
+        yield put(clearIdentity({}))
     }
 
     @action()
