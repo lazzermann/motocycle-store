@@ -78,6 +78,7 @@ const initialIdentity : IIdentity = {
 };
 
 const identity = (state = initialIdentity, action: any) =>{
+    console.log('Reducer allo', action)
     switch(action.type){
         case GET_IDENTITY :{
             console.log('GET_IDENTITY', action)
@@ -93,10 +94,14 @@ const identity = (state = initialIdentity, action: any) =>{
         }
         
         case UPDATE_IDENTITY :{
+            
+            console.log('UPDATE_INDENTITY allo', {...state, ...action})
+            console.log('ACTION UPDATE_INDENTITY ALLO',action ? true : false)
+            
             if(action){
                 return{
                     ...state,
-                    ...action.user
+                    ...action
                 }
             }
             return {
