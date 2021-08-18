@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import React,{useEffect, useState}  from 'react'
-// 
+import {connect} from 'react-redux'
+import { IIdentity } from 'server/common'
 
 interface IProps{
   loginUser: (data: any) => void
+  currentUser: IIdentity;
 }
 
 
@@ -21,6 +23,44 @@ export class Header extends React.Component<IProps, IState>{
   }
   
   render(){
+    const {currentUser} = this.props
+    let userAvatar = null
+    let userAvatarNavBar = null
+    let loginOrLogout = null
+    
+    if(currentUser.token){
+        console.log('userAvatarCustom')
+        loginOrLogout = '/login'
+        userAvatar =  <button className="mb-4 pt-0" type="button"> {/*Add link to login page*/}
+                        <div className="flex flex-row-reverse pt-0">
+                          <div className="pt">Hi {currentUser.firstName} {currentUser.lastName}</div>
+                          <img className="rounded-full -mt-4" width="50" height="50" src={currentUser.image} alt="" />
+                        </div>
+                      </button>
+
+        userAvatarNavBar =  <a className="flex justify-between" href="">
+                                <img className="rounded-full w-7 h-7" src={currentUser.image} alt="" />
+                                <span className="pl-4">Log out</span>
+                            </a>
+    }
+    else{
+
+        //Change after add logout endpoint
+        loginOrLogout = '/login'
+
+        userAvatar =  <button type="button"> {/*Add link to login page*/}
+                        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 459 459"><path d="M229.5 0C102.53 0 0 102.845 0 229.5 0 356.301 102.719 459 229.5 459 356.851 459 459 355.815 459 229.5 459 102.547 356.079 0 229.5 0zm118.101 364.67C314.887 393.338 273.4 409 229.5 409c-43.892 0-85.372-15.657-118.083-44.314a16.37 16.37 0 01-5.245-15.597c11.3-55.195 46.457-98.725 91.209-113.047C174.028 222.218 158 193.817 158 161c0-46.392 32.012-84 71.5-84s71.5 37.608 71.5 84c0 32.812-16.023 61.209-39.369 75.035 44.751 14.319 79.909 57.848 91.213 113.038a16.39 16.39 0 01-5.243 15.597z"/></svg>
+                      </button>
+
+        userAvatarNavBar =  <a className="flex justify-between" href="">
+                                <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 459 459"><path d="M229.5 0C102.53 0 0 102.845 0 229.5 0 356.301 102.719 459 229.5 459 356.851 459 459 355.815 459 229.5 459 102.547 356.079 0 229.5 0zm118.101 364.67C314.887 393.338 273.4 409 229.5 409c-43.892 0-85.372-15.657-118.083-44.314a16.37 16.37 0 01-5.245-15.597c11.3-55.195 46.457-98.725 91.209-113.047C174.028 222.218 158 193.817 158 161c0-46.392 32.012-84 71.5-84s71.5 37.608 71.5 84c0 32.812-16.023 61.209-39.369 75.035 44.751 14.319 79.909 57.848 91.213 113.038a16.39 16.39 0 01-5.243 15.597z"/></svg>
+                                <span className="pl-4">Sign in</span>
+                            </a>
+    }
+
+    console.log('userAvatar', userAvatar)
+    
+
     return(
         <header>
         <div className="flex justify-between px-2 py-2">
@@ -30,9 +70,12 @@ export class Header extends React.Component<IProps, IState>{
 
           <div className="flex mt-4 mr-2">
             <div className="pr-10">
-                <button type="button"> {/*Add link to login page*/}
+                {/* <button type="button"> 
                   <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 459 459"><path d="M229.5 0C102.53 0 0 102.845 0 229.5 0 356.301 102.719 459 229.5 459 356.851 459 459 355.815 459 229.5 459 102.547 356.079 0 229.5 0zm118.101 364.67C314.887 393.338 273.4 409 229.5 409c-43.892 0-85.372-15.657-118.083-44.314a16.37 16.37 0 01-5.245-15.597c11.3-55.195 46.457-98.725 91.209-113.047C174.028 222.218 158 193.817 158 161c0-46.392 32.012-84 71.5-84s71.5 37.608 71.5 84c0 32.812-16.023 61.209-39.369 75.035 44.751 14.319 79.909 57.848 91.213 113.038a16.39 16.39 0 01-5.243 15.597z"/></svg>
-                </button>
+                </button> */}
+
+                {userAvatar}
+
             </div>
 
             <div>
@@ -50,11 +93,11 @@ export class Header extends React.Component<IProps, IState>{
               <div className="border-t-8 sm:border-none sm:border-gray-300 transition ease-out duration-300  hover:bg-gray-300">
                 <Link href="/login">
                   <div className="flex justify-between pr-4 pl-6 py-3">
-                        <a className="flex justify-between" href="">
+                        {/* <a className="flex justify-between" href="">
                           <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 459 459"><path d="M229.5 0C102.53 0 0 102.845 0 229.5 0 356.301 102.719 459 229.5 459 356.851 459 459 355.815 459 229.5 459 102.547 356.079 0 229.5 0zm118.101 364.67C314.887 393.338 273.4 409 229.5 409c-43.892 0-85.372-15.657-118.083-44.314a16.37 16.37 0 01-5.245-15.597c11.3-55.195 46.457-98.725 91.209-113.047C174.028 222.218 158 193.817 158 161c0-46.392 32.012-84 71.5-84s71.5 37.608 71.5 84c0 32.812-16.023 61.209-39.369 75.035 44.751 14.319 79.909 57.848 91.213 113.038a16.39 16.39 0 01-5.243 15.597z"/></svg>
                           <span className="pl-4">Sign in</span>
-                        </a>
-                        
+                        </a> */}
+                        {userAvatarNavBar}
                         <a className="" href="">
                           <svg className="fill-current" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"/><path d="M9.47 16.47a.75.75 0 001.06 1.06l5-5a.75.75 0 000-1.061l-5-5A.75.75 0 009.47 7.53L13.94 12z" fill="#141124"/></svg>
                         </a>
@@ -135,3 +178,14 @@ export class Header extends React.Component<IProps, IState>{
     )
 }
 }
+
+const mapStateToProps = (state) => {
+  const { identity } = state;
+  console.log('identity', identity)
+  
+  return {
+      currentUser: identity
+  }
+};
+
+export default connect(mapStateToProps)(Header); 
