@@ -39,10 +39,8 @@ export class Identity extends Entity {
 
     @action()
     public* saveUser(data){
-        console.log('user',data)
-        const {response} = yield call(this.xFetch, `auth/signup`, HTTP_METHOD.POST, data)
-        console.log('Save user', response)
-        
+        console.log('LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL')
+        yield call(this.xFetch, `auth/signup`, HTTP_METHOD.POST, data)        
         // yield put(getIdentity(response.data[0]));
     }
 

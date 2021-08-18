@@ -40,4 +40,25 @@ public login(req: Request, res: Response, next: NextFunction){
         })(req, res, next);
 }
 
+@POST()
+    @route('/')
+    public jwt(req: Request, res: Response, next: NextFunction) {
+        const {passport} = this.di
+        return passport.authenticate('jwt', (err, identity: IIdentity) => {
+            const isLogged = identity && identity.id ;
+            console.log('acl identity', identity);
+            req.identity = identity;
+            if (!isLogged) {
+                //identity = clearIdentity()
+
+                req.session.identity = identity;
+            }
+
+            const isAllow = undefined
+            if (!isAllow) {
+                return res.answer(null, statusCode['404_MESSAGE'], statusCode.NOT_FOUND)
+            }
+        })
+    }
+
 }

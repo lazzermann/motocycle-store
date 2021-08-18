@@ -11,11 +11,11 @@ import jwt from 'jsonwebtoken'
 import config from '../../config'
 
 export default class JwtStrategy extends BaseContext {
-    private strategyUser: passportLocal.Strategy;
+    private _strategy: Strategy;
     private request: Request;
 
     get strategy() {
-        return this.strategyUser;
+        return this._strategy;
     }
 
     constructor(opts: IContextContainer) {
@@ -25,20 +25,27 @@ export default class JwtStrategy extends BaseContext {
         this.verifyRequest = this.verifyRequest.bind(this);
         this.getJwtFromRequest = this.getJwtFromRequest.bind(this);
 
-        this.strategyUser = new Strategy({
+        this._strategy = new Strategy({
             jwtFromRequest: this.getJwtFromRequest,
             secretOrKey: config.jwtSecret,
-        }, this.getJwtFromRequest);
+        }, this.verifyRequest);
     }
 
-    public async verifyRequest(jwtPayload: any, done: VerifiedCallback) {
-        console.log('jwt: verifyRequest');
+    public async verifyRequest(jwtPayload: IIdentity, done: VerifiedCallback) {
+        console.log('jwt: verifyRequest', jwtPayload);
+        const user = this.di.UserService.findById(jwtPayload.id);
+        if (user) {
+            return  done(null, jwtPayload);
+        } 
+        return done('Incorrect identity');
     }
 
     public getJwtFromRequest(req: Request) {
-        console.log('jwt: get jwt from request');
+        console.log('jwt: get jwt from request', req);
         this.request = req;
         const getToken = ExtractJwt.fromAuthHeaderAsBearerToken();
+        console.log('getToken', getToken(req))
+        
         return getToken(req) || req.cookies['token'] || null;
     }
 }

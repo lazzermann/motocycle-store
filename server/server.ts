@@ -7,10 +7,13 @@ import { Request, Response, NextFunction } from 'express'
 import config from '../config'
 import statusCode from '../http-status'
 import cookieSession from 'cookie-session'
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+
 import {IIdentity, UserRole, IGNORS} from './common'
 import BaseContext from './BaseContext'
 import Container, {passportFunc} from './container'
-import passport, {PassportStatic} from 'passport'
+import {PassportStatic} from 'passport'
 
 
 const express = require('express')
@@ -20,6 +23,8 @@ const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
+
+const passport = container.resolve<PassportStatic>("passport");
 
 
 const options = {
@@ -46,8 +51,12 @@ app.prepare().then(() => {
     keys: [config.jwtSecret],
     maxAge: 31 * 24 * 60 * 60 * 1000
   }))
+  server.use(cookieParser());
+  server.use(compression());
+  server.use(passport.initialize());
+  server.use(passport.session());
   server.use(responses)
-  server.use(print)
+  server.use(acl)
   server.use(scopePerRequest(container));
 
   //(config.dev ? 'ts' : 'js')
@@ -113,11 +122,6 @@ export const errorResult = (res, error, message, status = 404) => {
   });
 }
 
-const print = (req: Request, res: Response, next: NextFunction) =>{
- 
-  next()
-}
-
 const responses = (req: Request, res: Response, next: NextFunction) => {
   res.answer = (
         data: any,
@@ -142,40 +146,41 @@ const responses = (req: Request, res: Response, next: NextFunction) => {
     next()
 }
 
-const acl = (req: Request, res: Response, next: NextFunction) => {  
-  const passport = container.resolve<PassportStatic>("passport")
-  const path = req.url
-  //console.log(path)
-  
-  let useAcl = true  
-  for(const item of IGNORS){
-    if(path.startsWith(item)){
+const acl = (req: Request, res: Response, next: NextFunction) => {
+
+  let useAcl = true
+  const url = req.url
+  for (const item of IGNORS) {
+    if (url.startsWith(item)) {
       useAcl = false
     }
   }
-  
-  //console.log(useAcl)
-  
-  if(useAcl){
-    passport.authenticate('jwt', (err, identity: IIdentity) => {
-        console.log('passport.authenticate : ')
-        const isLogged = identity && identity.id && identity.role !== UserRole.guest
+
+  if (useAcl) {
+      const jwt = passport.authenticate('local-jwt', (err, identity: IIdentity) => {
+      const isLogged = identity && identity.id && identity.role !== UserRole.guest;
+      req.identity = identity;
+
+
+      if (!isLogged) {
         
-        if (!isLogged) {
-              //identity = clearIdentity()
-              req.session.identity = identity
-          }
-          
-          const isAllow = undefined
-          
-          if (!isAllow) {
-              return res.answer(null, statusCode['404_MESSAGE'], statusCode.NOT_FOUND)
-          }
-  })
+      }
+
+      const isAllow = undefined
+
+      if (isAllow) {
+        return res.answer(null, statusCode['404_MESSAGE'], statusCode.NOT_FOUND)
+      }
+    })
+    console.log('JWT', jwt);
+    
+    jwt(req, res, next);
   }
 
   next()
 }
+
+
 
 
 export default{}

@@ -43,18 +43,18 @@ export default class LogInStrategy extends BaseContext {
         console.log("Encrypted : " +  encryptedPass)
         
         if(encryptedPass){
-            const token = jwt.sign(user.toJSON(), config.jwtSecret)
 
             const identity : IIdentity ={
-                id : user._id,
+                id : user._id.toString(),
                 firstName : user.firstName,
                 lastName : user.lastName,
                 email : user.email,
-                token : token,
                 image : user.image,
                 role: UserRole.user
             }
-            
+            // token : token,
+            const token = jwt.sign(user.toJSON(), config.jwtSecret)
+            identity['token'] = token
             req.session.identity = identity
             return done(null, identity)
         }

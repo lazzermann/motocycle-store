@@ -41,10 +41,14 @@ export  class SignUpForm extends React.Component<IProps, IState>{
     }
 
     handleSubmitChange(e){
+        console.log('HANDLE_SUBMIT')
+        
         const {saveUser} = this.props
         e.preventDefault()
         saveUser(this.state)
-        // Router.push('/login', '/login', {shallow : true})
+        Router.push('/login')
+        console.log('PREVENT_DEFAULT')
+
     }
     
     render(){

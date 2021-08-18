@@ -5,6 +5,7 @@ import {REQUEST_RESULT} from './models/entity'
 import {FETCH_PRODUCTS, REQUEST_PRODUCTS} from './models/products'
 import {isEmpty, UserRole} from '../src/common'
 import {SET_SSR_DATA, CLEAR_SSR_DATA, GET_IDENTITY, UPDATE_IDENTITY, CLEAR_IDENTITY, action} from '../redux/models/actions'
+import { IIdentity } from 'server/common'
 export interface AppState {
     // entities:{
     //     user : any,
@@ -66,13 +67,17 @@ const ssrReducer = (state = queryInitialState, action: any) => {
 };
 
 
-const intitIdentity = {
-    firstName : 'guest',
-    lastName : 'guest',
-    role : UserRole.guest
-}
+const initialIdentity : IIdentity = {
+    firstName: 'guest',
+    lastName: 'guest',
+    role: UserRole.guest,
+    id: 'guest',
+    image: 'guest',
+    email: 'guest',
+    token: null
+};
 
-const identity = (state = intitIdentity, action: any) =>{
+const identity = (state = initialIdentity, action: any) =>{
     switch(action.type){
         case GET_IDENTITY :{
             console.log('GET_IDENTITY', action)
@@ -84,24 +89,26 @@ const identity = (state = intitIdentity, action: any) =>{
                 }
             }
 
-            break;
+            return {...state}
         }
         
         case UPDATE_IDENTITY :{
+            if(action){
+                return{
+                    ...state,
+                    ...action.user
+                }
+            }
             return {
                 ...state
             }
-
-            break
         }
 
         case CLEAR_IDENTITY :{
-            state = intitIdentity
+            state = initialIdentity
             return {
                 ...state
             }
-
-            break
         }
         
         default:
