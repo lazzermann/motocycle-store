@@ -13,6 +13,8 @@ import saga from "redux/decorators/saga"
 
 interface IProps{
     fetchProducts: (data: any) => void;
+    products : any,
+    reviews : any
 }
 interface IState{
     items: Array<Product>
@@ -30,10 +32,10 @@ export class BikeComponentList extends React.Component<IProps, IState>{
         }
     }
     
-    componentDidMount(){
-        const {fetchProducts} = this.props
-        fetchProducts({})
-    }
+    // componentDidMount(){
+    //     const {fetchProducts} = this.props
+    //     fetchProducts({})
+    // }
 
     render(){
         const {products, reviews} = this.props
@@ -58,11 +60,11 @@ export class BikeComponentList extends React.Component<IProps, IState>{
 }
 
 const mapStateToProps = (state) => {
-    const { entities } = state;
-    return {
-        products : !isEmpty(entities) && entities.get('product'),
-        reviews : !isEmpty(entities) && entities.get('reviews')
-    };
+    // const { entities } = state;
+    // return {
+    //     products : !isEmpty(entities) && entities.get('product'),
+    //     reviews : !isEmpty(entities) && entities.get('reviews')
+    // };
 };
 
 export default connect(mapStateToProps, ProductEntity.getTriggers())(BikeComponentList);

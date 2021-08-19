@@ -18,8 +18,10 @@ export default class RenderController extends BaseContext {
                 .getTheMostExpensive()
                 .lean()
                 .then(product => {
+                    console.log('RENDER CONTROLLER HOME PAGE', product)
+                    
                     return res.print('/', {
-                        [SCHEMA_ENTITIES.PRODUCT] : product[0]
+                        [SCHEMA_ENTITIES.PRODUCT] : product
                     })
                 })
         console.log('Home Page')

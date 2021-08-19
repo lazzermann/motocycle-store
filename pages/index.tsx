@@ -4,11 +4,28 @@ import dynamic from 'next/dynamic'
 import BikeComponentList from '../components/BikeComponentList'
 import Layout from '../components/Layout'
 import React from 'react' 
-
+import ProductEntity from '../redux/models/products'
+import saga from 'redux/decorators/saga'
+import { isEmpty } from 'src/common'
+import { connect } from 'react-redux'
+import wrapper from 'redux/store'
 export interface IHomeProps {
+  fetchProducts: (data: any) => void;
+  products : any,
+  reviews : any
+
 }
 
-export default class Home extends React.PureComponent<IHomeProps> {
+@saga(ProductEntity)
+class Home extends React.PureComponent<IHomeProps> {
+
+
+  public static getInitialProps = wrapper.getInitialAppProps(store => ({ query }) => {
+    console.log('Index Store', store)
+    
+    store.dispatch(ProductEntity.getTriggers().fetchProducts());
+})
+
   render(){
   return (
     <Layout>
@@ -44,9 +61,21 @@ export default class Home extends React.PureComponent<IHomeProps> {
       </section>
 
       <section className="pt-0 mt-4 border-t border-gray-300">
-        <BikeComponentList/>
+        <BikeComponentList products={this.props.products} reviews={this.props.reviews} />
       </section>
     </Layout>
   )
   }
+
 }
+
+const mapStateToProps = (state) => {
+  const { entities } = state;
+  
+  return {
+      products : !isEmpty(entities) && entities.get('product'),
+      reviews : !isEmpty(entities) && entities.get('reviews')
+  };
+};
+
+export default connect(mapStateToProps, ProductEntity.getTriggers())(Home);

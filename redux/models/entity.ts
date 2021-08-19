@@ -128,6 +128,7 @@ export class Entity {
         
             
         console.log('actionRequest', endpoint)
+        console.log('actionRequest QUERY', query)
         if (query && !isEmpty(query)) {
             yield put(clearSSRData({ name: this.schemaName }));
         } 
