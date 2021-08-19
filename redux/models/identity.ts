@@ -4,6 +4,7 @@ import {UserRole} from 'server/common'
 import {getIdentity, clearIdentity} from './actions'
 import {call, put} from 'redux-saga/effects'
 import { HTTP_METHOD } from 'redux/models/entity'
+import  Router  from 'next/router'
 export class Identity extends Entity {
     public firstName = 'GUEST'
     public lastName = 'GUEST'
@@ -34,7 +35,9 @@ export class Identity extends Entity {
 
     @action()
     public * logOutUser(data){
+        document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
         yield put(clearIdentity({}))
+        // Router.push('/', '/', {shallow: true})
     }
 
     @action()
