@@ -2,17 +2,19 @@ import Link from 'next/link'
 import React,{useEffect, useState}  from 'react'
 import {connect} from 'react-redux'
 import { IIdentity } from 'server/common'
-
+import Identity from 'redux/models/identity'
+import saga from 'redux/decorators/saga'
 interface IProps{
   loginUser: (data: any) => void
-  currentUser: IIdentity;
+  logOutUser: (data: any) => void
+  currentUser: any;
 }
 
 
 interface IState{
   isToggle : boolean
 }
-
+@saga(Identity)
 export class Header extends React.Component<IProps, IState>{
   
   constructor(props){
@@ -20,15 +22,25 @@ export class Header extends React.Component<IProps, IState>{
     this.state = {
       isToggle : false
     }
+
+    this.logOut = this.logOut.bind(this)
   }
   
+
+  logOut(){
+    const {logOutUser} = this.props
+    logOutUser({})
+    console.log('User', this.props.currentUser)
+    
+  }
+
   render(){
     const {currentUser} = this.props
     let userAvatar = null
     let userAvatarNavBar = null
     let loginOrLogout = null
     
-    if(currentUser.token){
+    if(currentUser.id !== 'guest'){
         console.log('userAvatarCustom')
         loginOrLogout = '/login'
         userAvatar =  <button className="mb-4 pt-0" type="button"> {/*Add link to login page*/}
@@ -38,7 +50,7 @@ export class Header extends React.Component<IProps, IState>{
                         </div>
                       </button>
 
-        userAvatarNavBar =  <a className="flex justify-between" href="">
+        userAvatarNavBar =  <a onClick={this.logOut} className="flex justify-between" href="">
                                 <img className="rounded-full w-7 h-7" src={currentUser.image} alt="" />
                                 <span className="pl-4">Log out</span>
                             </a>
@@ -188,4 +200,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Header); 
+export default connect(mapStateToProps, Identity.getTriggers())(Header); 

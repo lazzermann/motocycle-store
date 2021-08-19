@@ -67,7 +67,7 @@ const ssrReducer = (state = queryInitialState, action: any) => {
 };
 
 
-const initialIdentity : IIdentity = {
+const initialIdentity  = {
     firstName: 'guest',
     lastName: 'guest',
     role: UserRole.guest,
@@ -99,6 +99,8 @@ const identity = (state = initialIdentity, action: any) =>{
             console.log('ACTION UPDATE_INDENTITY ALLO',action ? true : false)
             
             if(action){
+                delete(action.type)
+                delete(action.password)
                 return{
                     ...state,
                     ...action

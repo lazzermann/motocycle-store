@@ -48,7 +48,7 @@ export default class SignUpStrategy extends BaseContext {
 
         newUser.save().then((user: any) => {
             return done(null, {
-                _id: user._id,
+                id: user._id.toString(),
                 email : user.email,
                 firstName : user.firstName,
                 lastName : user.lastName,
